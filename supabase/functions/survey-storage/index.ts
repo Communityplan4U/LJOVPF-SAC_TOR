@@ -1,7 +1,9 @@
 // Restricted server-to-server gateway for the SAC Terms of Reference survey.
 // Modelled on the Planning Framework survey-storage Edge Function.
-// Vercel holds an opaque gateway token; only its SHA-256 digest lives in
-// Supabase Edge secrets. The Supabase service-role key stays in Supabase.
+// The Vercel gateway token is sensitive; only its SHA-256 fingerprint is
+// checked into source, exactly as in the Framework Assessment gateway.
+// The Supabase service-role key stays inside Supabase.
+const PUBLIC_DIGEST='ff849cb67c5667a3cd5eb43d5b2957a4fb0531a2468371b67aafc304ab77962d';
 const OPS = new Set(['insert_response','get_response','update_response','delete_response','community_average']);
 const encoder = new TextEncoder();
 const IDS = new Set(['G1','G2','G3','G5','G4']);
@@ -14,7 +16,7 @@ async function authorized(req:Request){
  const m=/^Bearer ([A-Za-z0-9_-]{64,128})$/.exec(req.headers.get('authorization')||'');if(!m)return false;
  const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(m[1])));
  const match=(hex:string|undefined)=>{if(!hex||!/^[0-9a-f]{64}$/.test(hex))return false;let diff=0;for(let i=0;i<32;i++)diff|=digest[i]^parseInt(hex.slice(i*2,i*2+2),16);return diff===0;};
- return match(Deno.env.get('SAC_GATEWAY_TOKEN_SHA256'));
+ return match(PUBLIC_DIGEST);
 }
 async function limitedBody(req:Request){
  if(!req.body)throw Error('body');const reader=req.body.getReader();

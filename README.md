@@ -124,12 +124,12 @@ Configure these values as **server-side** environment variables:
 | SAC Vercel project | `SUPABASE_URL` | `https://rwrvsuheybpqelbtjaha.supabase.co` |
 | SAC Vercel project | `SURVEY_GATEWAY_TOKEN` | A dedicated randomly generated base64url token, 64–128 characters |
 | SAC Vercel project | `PUBLIC_ORIGINS` | `https://communityinpublic.ca,https://www.communityinpublic.ca` when using the main-site proxy |
-| SAC Supabase Edge secrets | `SAC_GATEWAY_TOKEN_SHA256` | Hex SHA-256 digest of that same gateway token |
+| SAC Supabase Edge Function source | `PUBLIC_DIGEST` in `supabase/functions/survey-storage/index.ts` | SHA-256 fingerprint of the token; never commit the original token |
 | Supabase-managed Edge environment | `SUPABASE_SECRET_KEYS` or `SUPABASE_SERVICE_ROLE_KEY` | Database service credential; keep it inside Supabase |
 
 `.env.example` documents the configuration; changing that file does not set the live Vercel variables. Never place secrets in GitHub or public build variables. Owner exports use Supabase account permissions and do not require a separate export key or administrator gateway token.
 
-The function's `verify_jwt = false` setting is limited to `survey-storage`, which authenticates the custom gateway token itself before accepting its allowed operations. Missing or incorrect gateway credentials are rejected. After configuring the deployment, check `/api/status`, create a test response, resume and revise it through its private link, verify the community average, delete the test response, and confirm owner views reflect the deletion.
+The SAC Edge Function uses the same **fingerprint-in-source** pattern as the Framework Assessment: the raw token is a sensitive Vercel variable, and only its SHA-256 digest (`PUBLIC_DIGEST`) is in the source. Regenerate both together to rotate the token, update the fingerprint in GitHub, redeploy the function, then update the Vercel secret. Its `verify_jwt = false` setting is limited to `survey-storage`, which verifies this custom bearer token before accepting its allowed operations. Missing or incorrect gateway credentials are rejected. After configuring the deployment, check `/api/status`, create a test response, resume and revise it through its private link, verify the community average, delete the test response, and confirm owner views reflect the deletion.
 
 ### Proposed website path
 

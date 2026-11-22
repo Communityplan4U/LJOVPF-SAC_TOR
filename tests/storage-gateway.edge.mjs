@@ -1,15 +1,28 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
+import {readFile,writeFile,mkdtemp,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {pathToFileURL} from 'node:url';
 import gateway from '../server/gateway.cjs';
 const {GatewayRepository,configured}=gateway;
 const saved={SUPABASE_URL:process.env.SUPABASE_URL,SURVEY_GATEWAY_TOKEN:process.env.SURVEY_GATEWAY_TOKEN};
 const token=crypto.randomBytes(48).toString('base64url'),admin=crypto.randomBytes(48).toString('base64url');
 const digest=x=>crypto.createHash('sha256').update(x).digest('hex');
-const vars={SAC_GATEWAY_TOKEN_SHA256:digest(token),SAC_GATEWAY_ADMIN_TOKEN_SHA256:digest(admin),SUPABASE_URL:'https://example.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'eyJ'+'.'.repeat(20)};
+const vars={SUPABASE_URL:'https://example.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'eyJ'+'.'.repeat(20)};
 let edge;
 globalThis.Deno={env:{get:key=>vars[key]},serve:fn=>{edge=fn;}};
-await import('../supabase/functions/survey-storage/index.ts');
+// Test the deployed digest-in-source design without committing its private token.
+// Substitute an ephemeral test token fingerprint into a temporary TS module.
+const source=await readFile(new URL('../supabase/functions/survey-storage/index.ts',import.meta.url),'utf8');
+const testSource=source.replace(/const PUBLIC_DIGEST='[a-f0-9]{64}';/,"const PUBLIC_DIGEST='"+digest(token)+"';");
+if(testSource===source)throw Error('Public digest constant missing from Edge Function');
+const testFolder=await mkdtemp(join(tmpdir(),'sac-gateway-edge-'));
+try{
+ await writeFile(join(testFolder,'index.ts'),testSource);
+ await import(pathToFileURL(join(testFolder,'index.ts')).href);
+}finally{await rm(testFolder,{recursive:true,force:true});}
 function call(name,args,key=token){return edge(new Request('https://example.supabase.co/functions/v1/survey-storage',{method:'POST',headers:{Authorization:'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({name,args})}));}
 const ranking=['G1','G2','G3','G5','G4'];
 const row={id:'cda6cc17-94ad-4a87-8cc6-374a09b9aa32',token_hash:crypto.createHash('sha256').update('subject').digest('hex'),version:'tor12-v1',ranking,connections:['resident'],email:null,newsletter_opt_in:false,planning_opt_in:false,feedback:'Community authority',revision:1};
