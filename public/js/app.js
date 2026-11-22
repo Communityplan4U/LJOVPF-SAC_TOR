@@ -151,11 +151,12 @@ function areaMatrix(order=START,weighted=false){
 function evidenceSection(){
  const cp=DATA.comparators.find(x=>x.id===STATE.selectedComparator&&x.id!=='ljovpf')||DATA.comparators.find(x=>x.id!=='ljovpf');
  if(!cp)return '';
- const meaning=v=>v===1?'Comparator TOR is stronger':v===-1?'LJOVPF TOR is stronger':v===0?'Comparable written provisions':'Not rated';
- const groups=DATA.areas.map((a,i)=>`<details class="area-accordion" ${i===0?'open':''}><summary><span class="area-numeral">${i+1}</span><span class="acc-title">${esc(a.name)}<small>${members(a.id).length} assessment criteria</small></span><span class="chev">⌄</span></summary><div class="acc-content">${members(a.id).map(c=>{
+const meaning=v=>v===1?'LJOVPF TOR is weaker':v===-1?'LJOVPF TOR is stronger':v===0?'Comparable written provisions':'Not rated'; const groups=DATA.areas.map((a,i)=>`<details class="area-accordion" ${i===0?'open':''}><summary><span class="area-numeral">${i+1}</span><span class="acc-title">${esc(a.name)}<small>${members(a.id).length} assessment criteria</small></span><span class="chev">⌄</span></summary><div class="acc-content">${members(a.id).map(c=>{
    const e=DATA.judgments?.[cp.id]?.[c.id];
    if(!e||e.rating===null)return `<article class="detail-card"><strong>${esc(c.id)} — ${esc(c.name)}</strong><p class="help">Documentary assessment not available.</p></article>`;
-   return `<article class="detail-card"><header><div><small>${esc(c.id)} · ${esc(a.name)}</small><h3>${esc(c.name)}</h3></div><span class="tag ${e.rating===1?'tag-w':e.rating===-1?'tag-s':'tag-c'}">${e.rating>0?'+1':e.rating} · ${meaning(e.rating)}</span></header><div class="detail-grid"><div><h4>Little Jamaica SAC TOR</h4><p>${esc(e.ljovpf_excerpt)}</p></div><div><h4>${esc(cp.name)} TOR</h4><p>${esc(e.comparator_excerpt)}</p></div></div><div class="rationale"><strong>Assessment rationale</strong><p>${esc(e.rationale)}</p></div>
+   return `<article class="detail-card"><header><div><small>${esc(c.id)} · ${esc(a.name)}</small><h3>${esc(c.name)}</h3></div><span class="tag ${e.rating===1?'tag-w':e.rating===-1?'tag-s':'tag-c'}">
+   ${meaning(e.rating)}
+   </span></header><div class="detail-grid"><div><h4>Little Jamaica SAC TOR</h4><p>${esc(e.ljovpf_excerpt)}</p></div><div><h4>${esc(cp.name)} TOR</h4><p>${esc(e.comparator_excerpt)}</p></div></div><div class="rationale"><strong>Assessment rationale</strong><p>${esc(e.rationale)}</p></div>
 <div class="help">
   <strong>What this governance area assesses:</strong>
   <ul class="criteria-bullets">
