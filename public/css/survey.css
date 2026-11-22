@@ -164,3 +164,15 @@ button.secondary,.rank-buttons button,.scope button{background:#fff;color:#4e305
   font-size: 0.79rem;
 }
 
+/* Allow the introductory heading and paragraphs
+   to extend across the browser window. */
+.wide.lead {
+  max-width: 90%;
+}
+
+.wide.lead h1,
+.wide.lead p {
+  max-width: 100%;
+}
+
+
