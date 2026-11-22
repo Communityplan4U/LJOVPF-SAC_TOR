@@ -6,7 +6,7 @@ A four-step Community in Public application comparing the written Terms of Refer
 
 Development takes place directly on `main` in [Communityplan4U/LJOVPF-SAC_TOR](https://github.com/Communityplan4U/LJOVPF-SAC_TOR). The dedicated [SAC Supabase project](https://supabase.com/dashboard/project/rwrvsuheybpqelbtjaha) is hosted in **Canada Central (`ca-central-1`)**. Its SAC tables, private reporting views and `survey-storage` Edge Function are installed.
 
-The checked-in assessment is still marked `published: false` and its comparative ratings are `null`. Approved workbook evidence has not been imported into this source file. The current source marks Weston in Gear as unverified; it remains unrated until that source record and its evidence are verified. Missing judgments are never treated as zero. The tool is not yet connected to the public website; production gateway credentials and a live save/resume/revise/delete check remain required before launch.
+**The approved documentary comparison is now published in the repository.** The canonical `data/assessment.json` contains all **120 approved judgments**: ten comparator TORs × twelve criteria. It includes the four-page user-supplied Weston in Gear LAC Terms of Reference at `public/sources/weston-in-gear-lac-tor.pdf`. The source is named, dated, and hashed for traceability. Default scores and ranks reproduce the approved November 22, 2026 workbook. The deployed public website, production gateway credentials, and live save/resume/revise/delete checks still require separate verification before launch.
 
 ## Four-step participant flow
 
@@ -14,6 +14,18 @@ The checked-in assessment is still marked `published: false` and its comparative
 2. **Rank governance areas.** Reorder the five areas. Positions receive **30%, 25%, 20%, 15% and 10%**. Neighbourhood connections, email and the two communication opt-ins are optional.
 3. **See the updated comparison.** Compare starting and personalized weighted net scores, inspect the evidence, and optionally comment on the SAC TORs.
 4. **Compare with respondents.** Compare the participant's weights with averages across saved responses, starting with the first completed submission. Copy a private return link to revise or delete the response later.
+
+### Approved starting ranking
+
+| Position | Governance area | Default importance |
+| --- | --- | ---: |
+| 1 | G1 — Community decision-making and influence | **30%** |
+| 2 | G2 — Timing and meaningful participation | **25%** |
+| 3 | G3 — Representation, equity and support | **20%** |
+| 4 | G5 — Transparency and public accountability | **15%** |
+| 5 | G4 — Committee governance and responsibilities | **10%** |
+
+Respondents can reorder these five areas. The five position weights move with the selected positions; the **120 documentary judgments do not change**. Scores are calculated from each area's average signed judgment and its selected weight.
 
 ### Assessment method
 
@@ -25,15 +37,16 @@ Only commitments explicitly written in each TOR support a judgment. Meeting cond
 
 Each area's weight is shared equally among its criteria. The weighted net score is `12 × sum(area weight × mean of the area's judgments)`, with weights expressed as proportions. Higher scores favour the comparator's written commitments; LJOVPF is the reference at zero once the assessment is published. Participant ranking changes the weights, while approved documentary judgments stay fixed. Ties share rank and incomplete comparators remain unrated.
 
-Background and origin are included in `G5-02`, without a separate fixed score. The twelve-criterion assessment must not be reconstructed from historical 21- or 23-component scores. See [the assessment method](docs/assessment-method.md).
+Background and origin are included in `G5-02`, without a separate fixed score. The twelve-criterion assessment must not be reconstructed from historical 21- or 23-component scores. See [the assessment method](docs/assessment-method.md) and [approved scores and rankings](docs/approved-results.md).
 
 ## Data structure and compatibility
 
 | File | Role |
 | --- | --- |
-| `data/assessment.json` | Authoritative SAC criteria, comparators, written-TOR evidence and approved judgments |
-| `data/methodology.json` | SAC source version, governance areas and 30/25/20/15/10 position weights |
+| `data/assessment.json` | **Published:** 120 approved source-based SAC TOR judgments and citation-level provenance |
+| `data/methodology.json` | Approved default governance area order and 30/25/20/15/10 position weights |
 | `public/css/survey.css` | Single stylesheet, including the reviewed SAC interface rules |
+| `public/sources/weston-in-gear-lac-tor.pdf` | User-supplied, four-page Weston in Gear written TOR linked from comparison evidence |
 | `public/index.html` | HTML shell; loads generated `js/data.js` before the application module |
 | `public/js/app.js` | Four-step interface, saving and private return links |
 | `public/js/scoring.js` | Assessment validation, weighting and net scores |
@@ -69,12 +82,12 @@ To build deployment output alone, run `npm run build`.
 
 ### Publish approved evidence
 
-Edit only `data/assessment.json` when importing approved evidence. Every rated comparator/criterion needs a rating, exact LJOVPF and comparator excerpts (or an explicit statement of absence), TOR sections and a rationale. Keep incomplete judgments as `null` and the assessment unpublished while review is underway.
+The current approved assessment is already imported. To import a later, explicitly approved revision, update `data/assessment.json` with the existing workbook importer; preserve each criterion's two source-based TOR provision summaries (or explicit absence), page/section references, rationale, and approval reference. These summaries are **not verbatim quotations**. A revised assessment must be revalidated before publication.
 
 The optional `scripts/import-approved-review.py` accepts an existing workbook whose **Assessment Approval** sheet has headers in row 5 and data from row 6, in this column order: comparator ID, comparator name, area, component ID, component title, LJOVPF excerpt, comparator excerpt, TOR sections, rating, rationale, review status and source URL. It imports rows marked `Approved`; it does not generate a workbook or assume one is bundled with the repository. Install `openpyxl` only if using this optional importer.
 
 ```bash
-python scripts/import-approved-review.py /path/to/approved-review.xlsx
+python scripts/import-approved-review.py /path/to/approved-review.xlsx --publish
 npm run validate:assessment
 ```
 
@@ -86,7 +99,7 @@ npm test
 npm run build
 ```
 
-The publication validator intentionally fails for the current unapproved source. A successful build of a draft is not approval to publish its comparative judgments.
+The publication validator **now passes** against the approved November 22, 2026 source. A successful build of a future unapproved draft is not approval to publish its judgments.
 
 ## Survey privacy and operations
 

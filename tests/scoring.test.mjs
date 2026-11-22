@@ -16,14 +16,20 @@ test('exact agreed five positions and weights',()=>{
  assert.equal(Object.values(weightsFor(AREA_IDS)).reduce((a,b)=>a+b,0),100);
  assert.equal(validOrder(['G1','G2','G3','G3','G4']),false);
 });
-test('source has exactly 12 TOR-only components; Weston unverified and unrated',()=>{
+test('source publishes exactly 120 approved, evidence-backed judgments including Weston',()=>{
  assert.equal(data.components.length,12);
  assert.equal(data.areas.length,5);
  assert.equal(data.comparators.length,11);
- assert.equal(data.comparators.find(x=>x.id==='comp2').url,null);
- assert.equal(validateAssessment(data).length,0);
- assert.equal(data.published,false);
- assert.ok(comparison(data).every(c=>c.score===null&&c.rank===null));
+ assert.equal(data.comparators.find(x=>x.id==='comp2').url,'sources/weston-in-gear-lac-tor.pdf');
+ assert.equal(data.published,true);
+ assert.equal(data.assessment_status,'approved');
+ assert.deepEqual(validateAssessment(data,true),[]);
+ const rates=data.comparators.filter(x=>x.id!=='ljovpf').flatMap(body=>data.components.map(c=>data.judgments[body.id][c.id].rating));
+ assert.equal(rates.length,120);
+ assert.equal(rates.filter(v=>v===1).length,78);
+ assert.equal(rates.filter(v=>v===0).length,26);
+ assert.equal(rates.filter(v=>v===-1).length,16);
+ assert.ok(comparison(data).every(c=>c.score!==null&&c.rank!==null));
 });
 test('no fabricated ratings appear: missing cells cannot be counted as zero',()=>{
  const f=approveFixture(fixture());
@@ -32,14 +38,14 @@ test('no fabricated ratings appear: missing cells cannot be counted as zero',()=
  assert.equal(comparison(f).find(c=>c.id==='comp1').rank,null);
  assert.ok(validateAssessment(f).some(x=>x.includes('Unrated comp1/G1-01')));
 });
-test('baseline returns zero for equal terms and excludes Weston',()=>{
+test('zero-judgment fixture includes all ten comparators including Weston',()=>{
  const f=approveFixture(fixture());
  assert.equal(totalScore(f,'ljovpf'),0);
  assert.equal(totalScore(f,'comp1'),0);
  const ranked=comparison(f);
- assert.equal(ranked.filter(x=>x.rank!==null).length,10);
- assert.equal(ranked.find(x=>x.id==='comp2').rank,null);
- assert.equal(ranked.filter(x=>x.rank===1).length,10);
+ assert.equal(ranked.filter(x=>x.rank!==null).length,11);
+ assert.equal(ranked.find(x=>x.id==='comp2').rank,1);
+ assert.equal(ranked.filter(x=>x.rank===1).length,11);
 });
 test('one area advantage receives exactly that area share of the 12-point scale',()=>{
  const f=approveFixture(fixture());

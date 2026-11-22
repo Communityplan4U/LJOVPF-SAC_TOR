@@ -61,7 +61,8 @@ export function validateAssessment(data,requirePublished=false) {
   if (new Set(ids).size!==12) issues.push('Duplicate component IDs');
   for (const c of data.components) if(!AREA_IDS.includes(c.area)||!c.name||!c.description)issues.push('Invalid component '+c.id);
   for (const body of data.comparators.filter(c=>c.id!==REFERENCE_ID)) {
-    if (body.url && (!body.url.startsWith('https://') || body.url.includes('\n')))issues.push('Invalid TOR URL for '+body.id);
+    if (body.url && !(body.url.startsWith('https://') || /^sources\/[a-z0-9][a-z0-9._-]*\.pdf$/.test(body.url)) || String(body.url||'').includes('\n'))issues.push('Invalid TOR URL for '+body.id);
+    if ((data.published || requirePublished) && (!body.url || body.source_state==='unverified'))issues.push('Published comparator must provide a verified TOR source: '+body.id);
     if (!data.judgments?.[body.id]) {issues.push('Missing judgment set for '+body.id);continue;}
     for (const c of data.components) {
       const r=data.judgments[body.id][c.id];

@@ -41,5 +41,7 @@
     10
   ],
   "method": "Only claims written in the respective TOR; each area is weighted by rank, with equal within-area component weights.",
-  "publication_status": "pending_user_approval"
+  "publication_status": "approved",
+  "assessment_revision": "tor12-approved-20261122-120rows",
+  "approval_source_workbook": "LJOVPF_SAC_TOR_Comparison_Approved_Weighted_Key_Findings_Updated.xlsx"
 }
