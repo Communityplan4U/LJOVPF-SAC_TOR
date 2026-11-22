@@ -3,7 +3,9 @@ import json,sys
 from openpyxl import load_workbook
 from collections import defaultdict
 root=Path(__file__).resolve().parents[1]
-source=Path(sys.argv[1] if len(sys.argv)>1 else root/'docs/review/assessment_review_template.xlsx')
+if len(sys.argv)<2 or sys.argv[1].startswith('--'):
+ print('Usage: python scripts/import-approved-review.py /path/to/approved-review.xlsx [--publish]');sys.exit(2)
+source=Path(sys.argv[1])
 config_path=root/'data/assessment.json';data=json.loads(config_path.read_text())
 ws=load_workbook(source,read_only=True,data_only=True)['Assessment Approval']
 ws.reset_dimensions()

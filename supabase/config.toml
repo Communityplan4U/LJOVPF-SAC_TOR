@@ -1,4 +1,4 @@
-# The function verifies separate high-entropy gateway tokens in constant time.
+# The function verifies its high-entropy gateway token in constant time.
 # Disable platform JWT verification ONLY for this service-to-service function.
 [functions.survey-storage]
 verify_jwt = false

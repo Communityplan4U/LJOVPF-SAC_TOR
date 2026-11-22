@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import gateway from '../server/gateway.cjs';
 const {GatewayRepository,configured}=gateway;
-const saved={...process.env};
+const saved={SUPABASE_URL:process.env.SUPABASE_URL,SURVEY_GATEWAY_TOKEN:process.env.SURVEY_GATEWAY_TOKEN};
 const token=crypto.randomBytes(48).toString('base64url'),admin=crypto.randomBytes(48).toString('base64url');
 const digest=x=>crypto.createHash('sha256').update(x).digest('hex');
 const vars={SAC_GATEWAY_TOKEN_SHA256:digest(token),SAC_GATEWAY_ADMIN_TOKEN_SHA256:digest(admin),SUPABASE_URL:'https://example.supabase.co',SUPABASE_SERVICE_ROLE_KEY:'eyJ'+'.'.repeat(20)};
@@ -21,7 +21,6 @@ async function fakeFetch(url,opts={}){
  if(String(url).includes('/rpc/ljovsac_public_average'))data={count:1,averages:{G1:30,G2:25,G3:20,G5:15,G4:10}};
  else if(opts.method==='POST')data=[{...row,created_at:'2026-11-22T00:00:00Z',updated_at:'2026-11-22T00:00:00Z'}];
  else if(opts.method==='PATCH')data=[{...row,...JSON.parse(opts.body),created_at:'2026-11-22T00:00:00Z'}];
- else if(String(url).includes('offset='))data=[];
  else if(opts.method==='GET')data=[row];
  else if(opts.method==='DELETE'){status=204;}
  return new Response(status===204?null:JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});
@@ -32,7 +31,7 @@ test('Edge refuses public and unknown operations, and does not contact database'
   const unauth=await edge(new Request('https://example.supabase.co/functions/v1/survey-storage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'get_response',args:{id:row.id}})}));
   assert.equal(unauth.status,401);
   assert.equal((await call('not_a_real_operation',{})).status,400);
-  assert.equal((await call('export_responses',{offset:0,limit:500})).status,403);
+  assert.equal((await call('export_responses',{offset:0,limit:500})).status,400);
   assert.equal((await call('get_response',{id:'no'})).status,422);
   assert.equal(requests.length,0);
  }finally{globalThis.fetch=originalFetch;}
@@ -50,22 +49,22 @@ test('Edge performs bounded, authorized CRUD and aggregate operations',async()=>
   assert.ok(requests.every(x=>x.url.startsWith(vars.SUPABASE_URL+'/rest/v1/')));
  }finally{globalThis.fetch=originalFetch;}
 });
-test('Admin export is isolated from regular survey gateway operations',async()=>{
+test('Retired administrator token cannot authorize any Edge operation',async()=>{
  requests=[];globalThis.fetch=fakeFetch;
  try{
-  assert.equal((await call('export_responses',{offset:0,limit:500},admin)).status,200);
-  assert.equal((await call('get_response',{id:row.id},admin)).status,403);
-  assert.ok(requests[0].url.includes('select=id,created_at'));
-  assert.ok(!requests[0].url.includes('token_hash'));
+  assert.equal((await call('export_responses',{offset:0,limit:500},admin)).status,401);
+  assert.equal((await call('get_response',{id:row.id},admin)).status,401);
+  assert.equal(requests.length,0);
  }finally{globalThis.fetch=originalFetch;}
 });
-test('Node gateway uses Edge Function endpoint and separate admin token',async()=>{
- process.env.SUPABASE_URL=vars.SUPABASE_URL;process.env.SURVEY_GATEWAY_TOKEN=token;process.env.SURVEY_GATEWAY_ADMIN_TOKEN=admin;
+test('Node gateway uses only the survey token and refuses raw export',async()=>{
+ process.env.SUPABASE_URL=vars.SUPABASE_URL;process.env.SURVEY_GATEWAY_TOKEN=token;
  requests=[];const observed=[];globalThis.fetch=async(url,opts)=>{observed.push({url,opts});return new Response(JSON.stringify({count:0,averages:{}}),{status:200,headers:{'Content-Type':'application/json'}});};
  try{
   assert.equal(configured(),true);const repository=new GatewayRepository();await repository.aggregates();
   assert.equal(observed.length,1);assert.equal(observed[0].url,vars.SUPABASE_URL+'/functions/v1/survey-storage');
   assert.equal(observed[0].opts.headers.Authorization,'Bearer '+token);
-  await assert.rejects(repository.all(),/Administrator/);
- }finally{globalThis.fetch=originalFetch;for(const k of ['SURVEY_GATEWAY_TOKEN','SURVEY_GATEWAY_ADMIN_TOKEN']){if(saved[k]===undefined)delete process.env[k];else process.env[k]=saved[k];}if(saved.SUPABASE_URL===undefined)delete process.env.SUPABASE_URL;else process.env.SUPABASE_URL=saved.SUPABASE_URL;}
+  await assert.rejects(repository.call('export_responses',{offset:0,limit:500}),/Unsupported storage operation/);
+  assert.equal(observed.length,1);
+ }finally{globalThis.fetch=originalFetch;for(const k of Object.keys(saved)){if(saved[k]===undefined)delete process.env[k];else process.env[k]=saved[k];}}
 });

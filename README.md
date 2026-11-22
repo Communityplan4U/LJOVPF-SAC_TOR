@@ -1,146 +1,132 @@
-# Little Jamaica SAC Terms of Reference comparison
+# Little Jamaica SAC — Terms of Reference Assessment
 
-A separate, four-step Community in Public web application, built from the approved Little Jamaica Planning Framework tool's interface patterns and the submitted **12-component, TOR-only component map**.
+A four-step Community in Public application comparing the written Terms of Reference (TORs) of the Little Jamaica and Oakwood Vaughan Stakeholder Advisory Committee with ten other Toronto advisory bodies. It follows the [Planning Framework Tool](https://github.com/Communityplan4U/little-jamaica-framework-tool)'s build, stylesheet, status and owner-reporting patterns, adapted to SAC's five governance areas and twelve criteria.
 
-## Build status
+## Current status
 
-**Application and server-side code: built and tested. Public launch: not yet authorized or configured.**
+Development takes place directly on `main` in [Communityplan4U/LJOVPF-SAC_TOR](https://github.com/Communityplan4U/LJOVPF-SAC_TOR). The dedicated [SAC Supabase project](https://supabase.com/dashboard/project/rwrvsuheybpqelbtjaha) is hosted in **Canada Central (`ca-central-1`)**. Its SAC tables, private reporting views and `survey-storage` Edge Function are installed.
 
-The `data/assessment.json` file deliberately has **no numerical comparative judgments**. The user requires the *user-approved* TOR-only judgments, which have not yet been supplied for the consolidated 12 components. The application's scores therefore remain **unrated** and cannot be published from placeholder data. Nine comparators require 12 verified ratings each (108 total). **Weston in Gear must stay unrated until its own written TOR is verified**; another committee's TOR cannot be substituted.
+The checked-in assessment is still marked `published: false` and its comparative ratings are `null`. Approved workbook evidence has not been imported into this source file. The current source marks Weston in Gear as unverified; it remains unrated until that source record and its evidence are verified. Missing judgments are never treated as zero. The tool is not yet connected to the public website; production gateway credentials and a live save/resume/revise/delete check remain required before launch.
 
-This delivery does not create or modify the existing LJOVPF Planning Framework repository, production Vercel project, Supabase schema, or any existing responses. A new isolated Supabase project and separate Vercel project remain to be connected for live use. Creating a new Supabase project may incur a cost; confirm the intended Supabase organization before provisioning.
+## Four-step participant flow
 
-## Four-step user experience
+1. **Compare the TORs.** Explore eleven advisory bodies, five governance-area comparisons and twelve assessment criteria.
+2. **Rank governance areas.** Reorder the five areas. Positions receive **30%, 25%, 20%, 15% and 10%**. Neighbourhood connections, email and the two communication opt-ins are optional.
+3. **See the updated comparison.** Compare starting and personalized weighted net scores, inspect the evidence, and optionally comment on the SAC TORs.
+4. **Compare with respondents.** Compare the participant's weights with averages across saved responses, starting with the first completed submission. Copy a private return link to revise or delete the response later.
 
-1. **Compare the TORs.** Overall relative net-score rankings, eleven advisory bodies, five governance-area comparisons, and twelve collapsible assessment criteria.
-2. **Rank governance areas.** Reorder five areas; positions retain weights **30%, 25%, 20%, 15%, 10%**. The original Planning Framework survey's optional neighbourhood-connection questions, email field and separate communication opt-ins appear here.
-3. **See updated comparison.** Compare starting and personalized weighted net scores, with **weighted area contributions**, criteria and optional comments about the SAC TORs.
-4. **Compare with respondents.** Side-by-side bars for the participant's own weights and the average across saved responses, shown starting with the **first** completed submission. It includes a private return-link copy control and the ability to remove the response.
+### Assessment method
 
-The G5-02 component includes Background & origin; **there is no fixed or separate score** for that subject.
+Only commitments explicitly written in each TOR support a judgment. Meeting conduct, correspondence and later practice do not form part of this assessment.
 
-### Scoring, direction and evidence limits
+- `+1`: the comparator has stronger written commitments than LJOVPF.
+- `0`: the written provisions are comparable.
+- `-1`: LJOVPF has stronger written commitments.
 
-- Each comparison uses ONLY commitments explicitly contained in the actual written TORs. No meeting attendance, staff correspondence or subsequent practice can support a judgment.
-- `+1` = comparator's TOR provides stronger written commitments than LJOVPF; `0` = comparable provisions; `-1` = LJOVPF provides stronger written commitments.
-- Each of the five area weights is shared equally among that area's approved components. There are 12 components altogether.
-- **Weighted net score** = `12 × sum( area_weight × mean(component judgments in area) )`, where area weights are proportions (e.g. 0.30). A higher net score favours the comparator's written commitments. LJOVPF has reference score 0.
-- Step 1 uses the adopted starting weights; Step 3 uses participant-reassigned area weights. The same approved judgments are held constant.
-- Scores/ranks are **null** unless all 12 judgments for that comparator are approved. Weston remains included but unrated. Rank is the position among *rated* bodies; ties share rank.
-- Source evidence in `assessment.json` must include rationale, TOR section and LJOVPF/comparator clause excerpts or an explicit notice that a provision is absent.
-- **Never** publish or reconstruct the 12-component baseline from the old 21- or 23-component scores. The old scoring is a different methodology.
+Each area's weight is shared equally among its criteria. The weighted net score is `12 × sum(area weight × mean of the area's judgments)`, with weights expressed as proportions. Higher scores favour the comparator's written commitments; LJOVPF is the reference at zero once the assessment is published. Participant ranking changes the weights, while approved documentary judgments stay fixed. Ties share rank and incomplete comparators remain unrated.
 
-## Source layout
+Background and origin are included in `G5-02`, without a separate fixed score. The twelve-criterion assessment must not be reconstructed from historical 21- or 23-component scores. See [the assessment method](docs/assessment-method.md).
 
-```text
-public/index.html             Original-design HTML shell
-public/css/style.css          Style system retained from reviewed mock-up
-public/js/app.js              Four-step public interface and response workflows
-public/js/scoring.js          Tested area weighting and net-score functions
-data/assessment.json   Exact 12 criteria, 11 bodies, no fabricated judgments
-api/response.js              Create, private retrieval, revision, deletion
-api/community.js             Aggregate average weights, no identifiable results
-api/admin/export.js          Administrator-only CSV export
-api/health.js                Non-sensitive readiness information
-lib/handlers.mjs             Input validation and private token authentication
-server/gateway.cjs           Vercel Edge gateway adapter and local-memory test store
-supabase/functions/survey-storage/index.ts   Restricted Supabase database operations
-supabase/config.toml           Edge Function authentication configuration
-server/dev.mjs               Local ephemeral memory development server
-supabase/schema.sql   Dedicated tables, RLS, grants, aggregate RPC
-scripts/validate-assessment.mjs    Publication gate
-```
+## Data structure and compatibility
 
-## Run locally
+| File | Role |
+| --- | --- |
+| `data/assessment.json` | Authoritative SAC criteria, comparators, written-TOR evidence and approved judgments |
+| `data/methodology.json` | SAC source version, governance areas and 30/25/20/15/10 position weights |
+| `public/css/survey.css` | Single stylesheet, including the reviewed SAC interface rules |
+| `public/index.html` | HTML shell; loads generated `js/data.js` before the application module |
+| `public/js/app.js` | Four-step interface, saving and private return links |
+| `public/js/scoring.js` | Assessment validation, weighting and net scores |
+| `scripts/build.mjs` | Validates source data, copies `public/` into `dist/`, and generates `dist/js/data.js` |
+| `api/status.js` | GET-only configuration and storage-readiness status |
+| `api/response.js` | Create, privately retrieve, revise and delete a response |
+| `api/checkpoint.js`, `api/resume.js` | Framework-style entry points to the SAC response handler |
+| `api/community.js` | Counts and average governance-area weights |
+| `server/lib/handlers.mjs` | Input validation and private participant-token authentication |
+| `server/gateway.cjs` | Server-to-Edge adapter and local development memory store |
+| `supabase/functions/survey-storage/index.ts` | Restricted SAC database operations |
+| `supabase/schema.sql` | SAC tables, RLS, aggregate function, rank-history trigger and private reporting views |
+| `supabase/owner_queries.sql` | Owner reporting and CSV export through the Supabase SQL Editor |
 
-Install **Node.js 22 or later**. No npm dependencies are required.
+As in the Framework Tool, the build produces `window.LJOV_ASSESSMENT` and `window.LJOV_METHODOLOGY` in `dist/js/data.js`. The data comes from the canonical files in `data/`; generated assets are not edited or committed. `public/` is the source asset directory and `dist/` is the deployment output. There is no second public assessment JSON to synchronize.
+
+SAC retains its own `tor12-v1` data shape, five areas, twelve criteria, rank history and response tokens. Framework-specific collection rounds, deadlines, topic allocations and response data are not imported into this tool.
+
+## Run locally and validate
+
+Install **Node.js 22 or later**. There are no runtime npm dependencies.
 
 ```bash
+npm ci --ignore-scripts
 npm run validate:assessment
 npm test
 npm run dev
 ```
 
-Open `http://127.0.0.1:4177/`. The local server intentionally stores test responses **in memory only**. They disappear when it stops; it does not connect to or alter existing Supabase data.
+Open `http://127.0.0.1:4177/`. Development builds and serves `dist/`. The local server uses memory storage: test responses disappear when it stops. `/api/status` identifies this development storage separately from a verified Supabase connection.
 
-For a standalone *design review*, open the companion `LJOVPF_SAC_TOR_Full_Build_Design_Preview.html`. That file clearly identifies its temporary browser-tab-only mock API; do **not** publish it as the real application. The complete deployable application is the project directory.
+To build deployment output alone, run `npm run build`.
 
-## Publish approved assessment data
+### Publish approved evidence
 
-1. Fill `docs/review/assessment_review_template.xlsx` (120 rows covering all ten comparators; Weston remains on hold). For each of the **108 verified-comparator rows**, supply the rating `-1`, `0`, or `1`, both exact TOR excerpts (or an explicit statement of silence), the TOR sections and your rationale. Mark each fully source-checked row `Approved`. The original LJOVPF TOR is the common reference.
-2. Run `python scripts/import-approved-review.py docs/review/assessment_review_template.xlsx` to import only the approved rows into `data/assessment.json`. Install `openpyxl` locally for this one-time import script if needed. To release an entirely approved matrix, run the same script with `--publish`. This fails until all 108 verified rows are approved.
-3. Keep all Weston in Gear values `null` and its source unverified until its actual TOR is obtained. Do not count Weston as tied or zero.
-4. Run `npm run validate:assessment`; it checks structure, 12 components, citations, and Weston restrictions.
-5. The `--publish` import flag sets `assessment_status` to `approved` and `published` to `true` only when the complete approved matrix validates.
-6. Run `npm run validate:publication` (requires complete, justified judgments for all nine verified comparators).
-7. Build/test a non-production deployment before enabling a public URL. The client also checks the validation rules and suppresses scores if the approved file is malformed.
+Edit only `data/assessment.json` when importing approved evidence. Every rated comparator/criterion needs a rating, exact LJOVPF and comparator excerpts (or an explicit statement of absence), TOR sections and a rationale. Keep incomplete judgments as `null` and the assessment unpublished while review is underway.
 
-## Separate database setup (required for live saving)
+The optional `scripts/import-approved-review.py` accepts an existing workbook whose **Assessment Approval** sheet has headers in row 5 and data from row 6, in this column order: comparator ID, comparator name, area, component ID, component title, LJOVPF excerpt, comparator excerpt, TOR sections, rating, rationale, review status and source URL. It imports rows marked `Approved`; it does not generate a workbook or assume one is bundled with the repository. Install `openpyxl` only if using this optional importer.
 
-The dedicated **Canada Central Supabase project is now provisioned**. The schema and reporting views from `supabase/schema.sql` have been applied to project `rwrvsuheybpqelbtjaha`. This project is isolated from the Little Jamaica Planning Framework survey. Verify the following before launching:
-
-- `public.ljovsac_responses` has RLS enabled and no access for `anon` or `authenticated` roles.
-- `public.ljovsac_rank_revisions` stores append-only ranking revision history; it does **not** duplicate contact details or comments. Deleting a response deletes its rank revisions.
-- `public.ljovsac_public_average()` is executable only by server-side service role, and returns only `{count, averages}`.
-- The server stores a **SHA-256 hash** of each high-entropy private token, never the token itself. Read/revision/deletion require the private token; old revisions cannot silently overwrite newer ones.
-- The public app never receives a Supabase key. Only Supabase Edge Functions hold the service-role credential; Vercel holds opaque gateway tokens.
-
-## Deploy the separate Vercel project
-
-Create a new GitHub repository for this project, separately from `Communityplan4U/little-jamaica-framework-tool`, and connect it to a **new Vercel project** under Community in Public. Keep preview deployments restricted while the baseline review and privacy/security checks are incomplete.
-
-Set the following server-side environment variables in **Vercel Project Settings** (do not paste secrets into chats or source code):
-
-```text
-SUPABASE_URL
-SURVEY_GATEWAY_TOKEN
-SURVEY_GATEWAY_ADMIN_TOKEN
-ADMIN_EXPORT_KEY
-PUBLIC_ORIGINS=https://communityinpublic.ca,https://www.communityinpublic.ca
+```bash
+python scripts/import-approved-review.py /path/to/approved-review.xlsx
+npm run validate:assessment
 ```
 
-`PUBLIC_ORIGINS` lists allowed public website origins for submissions forwarded through the `/ljovsac` reverse proxy. Keep it limited to the actual website and any trusted preview origins. Set `ADMIN_EXPORT_KEY` to a randomly generated secret of at least 32 characters. Create it using your password manager or a local cryptographic random generator. Do not use `NEXT_PUBLIC_` or public build variables for any of these.
+The importer's `--publish` option requires the complete evidence matrix for the currently verified comparators. After an approved import, run:
 
-Deploy the restricted `survey-storage` Supabase Edge Function and configure `supabase/config.toml`: `verify_jwt = false` applies only to this function because it verifies its own high-entropy service-to-service tokens. Configure independent SHA-256 digest secrets `SAC_GATEWAY_TOKEN_SHA256` and `SAC_GATEWAY_ADMIN_TOKEN_SHA256` in Supabase, matching separate Vercel `SURVEY_GATEWAY_TOKEN` and `SURVEY_GATEWAY_ADMIN_TOKEN` values. Keep Supabase service-role credentials in Supabase only. The regular gateway token cannot export private responses, and the administrator gateway token is accepted only for that restricted export operation.
+```bash
+npm run validate:publication
+npm test
+npm run build
+```
 
-The build uses `public/` static assets, `api/` Node.js serverless handlers and the included `vercel.json`; no build step or third-party packages are required. Test `GET /api/health`, a created response, private resume/revision, an authorized export, and `GET /api/community` after applying the SAC schema and deploying the Edge Function. Confirm that unauthenticated raw requests to the database tables are denied.
+The publication validator intentionally fails for the current unapproved source. A successful build of a draft is not approval to publish its comparative judgments.
 
-### Proposed `communityinpublic.ca/ljovsac` path
+## Survey privacy and operations
 
-This app recognizes both a standalone Vercel domain root (`/`) and a reverse-proxied `/ljovsac/` prefix. To serve it under the established Community in Public domain, integrate **these rewrites into the EXISTING main-site configuration only after its current routing has been reviewed**:
+Participant email and the newsletter and Little Jamaica planning-update permissions are separate and optional. Private return-link tokens are stored as SHA-256 hashes in the database; private retrieval, revision and deletion require the original token. Revision checks prevent an older browser tab from silently overwriting a newer response. Deleting a response also removes its rank history.
+
+Both SAC tables have RLS enabled. The `anon` and `authenticated` roles have no table access, and owner reporting is restricted to `survey_private`. Only the Supabase Edge Function holds the database service credential. The browser receives neither that credential nor the server gateway token.
+
+Public community results contain counts and average weights only. They represent saved responses, not verified unique people or a representative sample. A revision replaces the same response's previous weighting in the average. Under the accepted first-response rule, a one-response average equals that respondent's choices; this is disclosed in Step 4.
+
+Owners review and export results through their existing Supabase accounts, following [the SAC results guide](docs/SUPABASE_RESULTS_GUIDE.md). The first query in `supabase/owner_queries.sql` provides a CSV-ready response export that protects free-text fields against spreadsheet formula interpretation. Contact information and comments remain private owner data.
+
+Return-link email is optional and disabled by default. Enable it only after configuring a verified sender and the optional variables in `.env.example`. Public launch also requires the agreed privacy notice, retention arrangements, withdrawal process and abuse controls; the source package does not activate an external rate limiter.
+
+## Connect the SAC deployment
+
+Connect this repository's `main` branch to the SAC Vercel project, separate from the Framework deployment. The checked-in `vercel.json` sets `npm run build` and output directory `dist`.
+
+Configure these values as **server-side** environment variables:
+
+| Location | Variable | Value |
+| --- | --- | --- |
+| SAC Vercel project | `SUPABASE_URL` | `https://rwrvsuheybpqelbtjaha.supabase.co` |
+| SAC Vercel project | `SURVEY_GATEWAY_TOKEN` | A dedicated randomly generated base64url token, 64–128 characters |
+| SAC Vercel project | `PUBLIC_ORIGINS` | `https://communityinpublic.ca,https://www.communityinpublic.ca` when using the main-site proxy |
+| SAC Supabase Edge secrets | `SAC_GATEWAY_TOKEN_SHA256` | Hex SHA-256 digest of that same gateway token |
+| Supabase-managed Edge environment | `SUPABASE_SECRET_KEYS` or `SUPABASE_SERVICE_ROLE_KEY` | Database service credential; keep it inside Supabase |
+
+`.env.example` documents the configuration; changing that file does not set the live Vercel variables. Never place secrets in GitHub or public build variables. Owner exports use Supabase account permissions and do not require a separate export key or administrator gateway token.
+
+The function's `verify_jwt = false` setting is limited to `survey-storage`, which authenticates the custom gateway token itself before accepting its allowed operations. Missing or incorrect gateway credentials are rejected. After configuring the deployment, check `/api/status`, create a test response, resume and revise it through its private link, verify the community average, delete the test response, and confirm owner views reflect the deletion.
+
+### Proposed website path
+
+The frontend supports both a standalone domain root and the `/ljovsac/` prefix. When connecting the main website, merge the following into its existing routing configuration, replacing the example destination with the actual SAC deployment:
 
 ```json
 {"rewrites": [
-  {"source": "/ljovsac", "destination": "https://NEW-SAC-PROJECT.vercel.app/"},
-  {"source": "/ljovsac/:path*", "destination": "https://NEW-SAC-PROJECT.vercel.app/:path*"}
+  {"source": "/ljovsac", "destination": "https://YOUR-SAC-DEPLOYMENT.vercel.app/"},
+  {"source": "/ljovsac/:path*", "destination": "https://YOUR-SAC-DEPLOYMENT.vercel.app/:path*"}
 ]}
 ```
 
-Do not overwrite the main site's existing rewrites. The `public/index.html` and frontend API requests are prefix-aware. Validate CSS, JS, data and API paths at the final domain before publishing. The Vercel domain and project connection have not been created in this package.
-
-## Administrator response export
-
-An administrator with the `ADMIN_EXPORT_KEY` may request a CSV from `GET /api/admin/export` with an `Authorization: Bearer` header. The CSV includes optional email/opt-ins and comments. The endpoint is not exposed by the public UI, uses constant-time admin key comparison, avoids public caching and prefixes potentially executable CSV formulas. Restrict use to authorized staff and store exports securely.
-
-## Security, privacy and release checklist
-
-- Confirm the Community in Public privacy notice, lawful basis/consent copy, retention period, access controls and withdrawal process before accepting public information.
-- Put appropriate anti-abuse protections and edge rate limiting around the anonymous response creation endpoint before a public outreach campaign. No CAPTCHA or edge limiter has been activated by this source package.
-- Test the actual isolated Supabase database with server-side keys, not only the local memory adapter.
-- Confirm every published TOR source URL is publicly accessible and citations support the exact judgment. Weston remains unranked until verified.
-- Check that scores only reflect documented TOR commitments; keep the approval gate in place.
-- Configure deployment protection and release management before attaching the public path.
-- Confirm optional emails and the two subscriptions are never displayed or exposed by public results.
-- The community mean is across completed *saved responses*, **not proven unique persons**. Return-link revisions count only once per saved response; one person can create multiple links. The interface does not claim statistical representativeness.
-- Under the accepted first-response rule, the first published average may equal one person's choice. This is disclosed prominently in Step 4.
-- The existing Planning Framework application and its data stay untouched.
-
-## SAC Supabase project and owner reporting (November 2026)
-
-The isolated [LJOVPF-SAC_TOR Canadian Supabase project](https://supabase.com/dashboard/project/rwrvsuheybpqelbtjaha) has the SAC schema, private reporting views, and `survey-storage` Edge Function installed. It is in **Canada Central (Toronto region, ca-central-1)**, matching the Framework Assessment project's Canadian hosting location.
-
-Use `supabase/owner_queries.sql` and `supabase/reporting.sql` to inspect private participation, governance-area weights, historical rankings and access permissions in the authorized SQL Editor. The [SAC Supabase results guide](docs/SUPABASE_RESULTS_GUIDE.md) explains each view. The repository's `supabase/schema.sql` now includes both the SAC application tables and the private owner reporting views.
-
-**Current database: `rwrvsuheybpqelbtjaha` (Canada Central). The older `rwrvsuheybpqelbtjaha` project is superseded and must not be used for SAC application connections.**
-
-**Connection remains intentionally pending:** configure separate `SURVEY_GATEWAY_TOKEN` and `SURVEY_GATEWAY_ADMIN_TOKEN` in Vercel, and their SHA-256 digest equivalents `SAC_GATEWAY_TOKEN_SHA256` and `SAC_GATEWAY_ADMIN_TOKEN_SHA256` in Supabase Edge Function secrets. Do not share these secrets in GitHub or chat. Until configured, the Edge Function rejects callers. Live Vercel-to-Supabase response saving and export remain unverified; do not invite public responses yet.
+Verify the stylesheet, generated data script, JavaScript modules and API requests at the final path before public release.

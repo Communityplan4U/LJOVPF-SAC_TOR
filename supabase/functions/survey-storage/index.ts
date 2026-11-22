@@ -1,24 +1,20 @@
 // Restricted server-to-server gateway for the SAC Terms of Reference survey.
 // Modelled on the Planning Framework survey-storage Edge Function.
-// Vercel holds opaque gateway tokens; only their SHA-256 digests live in
+// Vercel holds an opaque gateway token; only its SHA-256 digest lives in
 // Supabase Edge secrets. The Supabase service-role key stays in Supabase.
-const OPS = new Set(['insert_response','get_response','update_response','delete_response','community_average','export_responses']);
-const NORMAL_OPS = new Set(['insert_response','get_response','update_response','delete_response','community_average']);
+const OPS = new Set(['insert_response','get_response','update_response','delete_response','community_average']);
 const encoder = new TextEncoder();
 const IDS = new Set(['G1','G2','G3','G5','G4']);
 const CONNECTIONS = new Set(['resident','former','business','worker','visit','representation','other']);
 const COLS = 'id,token_hash,version,ranking,connections,email,newsletter_opt_in,planning_opt_in,feedback,revision,created_at,updated_at';
-const EXPORT_COLS = 'id,created_at,updated_at,revision,ranking,connections,email,newsletter_opt_in,planning_opt_in,feedback';
 const uuid = (v:unknown) => typeof v==='string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 const record = (v:unknown):v is Record<string,unknown> => !!v && typeof v==='object' && !Array.isArray(v);
 function reply(status:number,value:unknown){return new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});}
-async function credentialRole(req:Request){
- const m=/^Bearer ([A-Za-z0-9_-]{64,128})$/.exec(req.headers.get('authorization')||'');if(!m)return null;
+async function authorized(req:Request){
+ const m=/^Bearer ([A-Za-z0-9_-]{64,128})$/.exec(req.headers.get('authorization')||'');if(!m)return false;
  const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(m[1])));
  const match=(hex:string|undefined)=>{if(!hex||!/^[0-9a-f]{64}$/.test(hex))return false;let diff=0;for(let i=0;i<32;i++)diff|=digest[i]^parseInt(hex.slice(i*2,i*2+2),16);return diff===0;};
- if(match(Deno.env.get('SAC_GATEWAY_ADMIN_TOKEN_SHA256')))return 'admin';
- if(match(Deno.env.get('SAC_GATEWAY_TOKEN_SHA256')))return 'normal';
- return null;
+ return match(Deno.env.get('SAC_GATEWAY_TOKEN_SHA256'));
 }
 async function limitedBody(req:Request){
  if(!req.body)throw Error('body');const reader=req.body.getReader();
@@ -45,17 +41,15 @@ function validateOperation(name:string,args:Record<string,unknown>){
  validValues(args.changes)&&record(args.changes)&&args.changes.revision===Number(args.revision)+1&&
  typeof args.changes.updated_at==='string'&&!Number.isNaN(Date.parse(args.changes.updated_at))&&Object.keys(args).length===3;
  if(name==='community_average')return Object.keys(args).length===0;
- if(name==='export_responses')return Number.isSafeInteger(args.offset)&&Number(args.offset)>=0&&Number(args.offset)<=100000&&Number.isSafeInteger(args.limit)&&Number(args.limit)>=1&&Number(args.limit)<=500&&Object.keys(args).length===2;
  return false;
 }
 Deno.serve(async(req:Request)=>{
  if(req.method!=='POST')return reply(405,{code:'method_not_allowed'});
- const role=await credentialRole(req);if(!role)return reply(401,{code:'unauthorized'});
+ if(!await authorized(req))return reply(401,{code:'unauthorized'});
  if(!req.headers.get('content-type')?.toLowerCase().startsWith('application/json'))return reply(415,{code:'json_required'});
  try{
   const body=await limitedBody(req);
   if(!record(body)||typeof body.name!=='string'||!OPS.has(body.name)||!record(body.args))return reply(400,{code:'invalid_operation'});
-  if(body.name==='export_responses'?role!=='admin':!NORMAL_OPS.has(body.name)||role!=='normal')return reply(403,{code:'forbidden_operation'});
   if(!validateOperation(body.name,body.args))return reply(422,{code:'invalid_arguments'});
   const keys=JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS')||'{}');
   const key=keys.default||Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'),url=Deno.env.get('SUPABASE_URL');
@@ -66,7 +60,6 @@ Deno.serve(async(req:Request)=>{
   if(body.name==='update_response'){path='/ljovsac_responses?id=eq.'+encodeURIComponent(String(body.args.id))+'&revision=eq.'+body.args.revision;method='PATCH';data=body.args.changes;prefer='return=representation';}
   if(body.name==='delete_response'){path='/ljovsac_responses?id=eq.'+encodeURIComponent(String(body.args.id));method='DELETE';prefer='return=minimal';}
   if(body.name==='community_average'){path='/rpc/ljovsac_public_average';method='POST';data={};}
-  if(body.name==='export_responses'){path='/ljovsac_responses?select='+EXPORT_COLS+'&order=created_at.asc&limit='+body.args.limit+'&offset='+body.args.offset;}
   const headers:Record<string,string>={apikey:key,Accept:'application/json'};
   if(key.startsWith('eyJ'))headers.Authorization='Bearer '+key;
   if(data!==undefined)headers['Content-Type']='application/json';

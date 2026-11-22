@@ -4,17 +4,20 @@ import {resolve,extname,sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import gateway from './gateway.cjs';
 const {createRepository}=gateway;
-import {responseHandler,communityHandler,adminExportHandler,json} from './lib/handlers.mjs';
-const root=resolve(fileURLToPath(new URL('../public/',import.meta.url)));
+import {responseHandler,communityHandler,json} from './lib/handlers.mjs';
+const root=resolve(fileURLToPath(new URL('../dist/',import.meta.url)));
 const repo=createRepository({local:true});
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json; charset=utf-8','.css':'text/css; charset=utf-8','.png':'image/png','.svg':'image/svg+xml'};
 const server=http.createServer(async(req,res)=>{
   try{
     const url=new URL(req.url,'http://localhost');
-    if(url.pathname==='/api/response')return await responseHandler(req,res,repo);
+    if(['/api/response','/api/checkpoint','/api/resume'].includes(url.pathname))return await responseHandler(req,res,repo);
     if(url.pathname==='/api/community')return await communityHandler(req,res,repo);
-    if(url.pathname==='/api/admin/export')return await adminExportHandler(req,res,repo);
-    if(url.pathname==='/api/health')return json(res,200,{app:'ljov-sac-tor',development:true,storageConfigured:true});
+    if(url.pathname==='/api/status'){
+      if(req.method!=='GET')return json(res,405,{error:'Method not allowed'});
+      return json(res,200,{app:'ljov-sac-tor',version:'tor12-v1',development:true,storage:'memory',configured:false,storageAvailable:true});
+    }
+    if(url.pathname.startsWith('/api/'))return json(res,404,{error:'Not found'});
     if(!['GET','HEAD'].includes(req.method))return json(res,405,{error:'Method not allowed'});
     const local=resolve(root,'.'+decodeURIComponent(url.pathname==='/'?'/index.html':url.pathname));
     if(local!==root&&!local.startsWith(root+sep))return json(res,403,{error:'Forbidden'});
@@ -23,4 +26,4 @@ const server=http.createServer(async(req,res)=>{
   }catch{return json(res,404,{error:'Not found'});}
 });
 const port=Number(process.env.PORT||4177);
-server.listen(port,'127.0.0.1',()=>{console.log(`Local SAC TOR app: http://127.0.0.1:${port}`);console.log('Development memory storage only: local responses reset when the server stops.');});
+server.listen(port,'127.0.0.1',()=>{console.log(`Local SAC TOR app: http://127.0.0.1:${server.address().port}`);console.log('Development memory storage only: local responses reset when the server stops.');});

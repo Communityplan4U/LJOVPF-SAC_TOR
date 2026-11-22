@@ -3,6 +3,6 @@ node_modules/
 .env.*
 !.env.example
 .vercel/
-public/data/assessment.json
+dist/
 *.log
 .DS_Store

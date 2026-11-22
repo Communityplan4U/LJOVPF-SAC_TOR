@@ -91,19 +91,3 @@ export async function communityHandler(req,res,repo){
     return json(res,200,{available:count>=1,count,averages:count>=1?averages:null});
   }catch{return errorJson(res,503,'Community comparison is temporarily unavailable');}
 }
-function preventSpreadsheetFormula(v){const s=String(v??'');return /^[\s]*[=+\-@\t\r]/.test(s)?"'"+s:s;}
-function csvCell(v){const text=preventSpreadsheetFormula(v);return '"'+text.replaceAll('"','""')+'"';}
-export async function adminExportHandler(req,res,repo){
-  if(req.method!=='GET')return errorJson(res,405,'Method not allowed');
-  const expected=process.env.ADMIN_EXPORT_KEY||'';
-  const token=reqToken(req);
-  if(expected.length<32)return errorJson(res,503,'Administrator export is not configured');
-  const a=Buffer.from(expected),b=Buffer.from(token);
-  if(a.length!==b.length||!crypto.timingSafeEqual(a,b))return errorJson(res,401,'Unauthorized');
-  try{
-    const rows=await repo.all();
-    const columns=['id','created_at','updated_at','revision','ranking','connections','email','newsletter_opt_in','planning_opt_in','feedback'];
-    const csv=[columns.join(','),...rows.map(r=>columns.map(col=>csvCell(['ranking','connections'].includes(col)?JSON.stringify(r[col]):r[col])).join(','))].join('\r\n')+'\r\n';
-    res.statusCode=200;res.setHeader('Content-Type','text/csv; charset=utf-8');res.setHeader('Cache-Control','no-store');res.setHeader('Content-Disposition','attachment; filename="ljovsac-responses.csv"');res.end(csv);
-  }catch{return errorJson(res,503,'Export unavailable');}
-}

@@ -240,7 +240,8 @@ document.addEventListener('dragend',()=>{dragging=null;qa('.drag-over,.is-draggi
 
 async function start(){
  try{
- DATA=await fetchJSON(APP_BASE+'data/assessment.json');
+ DATA=window.LJOV_ASSESSMENT;
+ if(!DATA)throw Error('The assessment is temporarily unavailable. Please try again later.');
  const issues=validateAssessment(DATA);
  if(issues.length){DATA.published=false;STATE.notice='Assessment evidence is incomplete or invalid. Comparative scores are withheld until it is corrected.';}
  await restoreFromLink();

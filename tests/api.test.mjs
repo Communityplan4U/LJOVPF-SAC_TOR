@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import http from 'node:http';
 import gateway from '../server/gateway.cjs';
 const {MemoryRepository}=gateway;
-import {responseHandler,communityHandler,adminExportHandler} from '../server/lib/handlers.mjs';
+import {responseHandler,communityHandler} from '../server/lib/handlers.mjs';
 const repo=new MemoryRepository();let server,origin;
-before(async()=>{server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');if(url.pathname==='/response')return responseHandler(req,res,repo);if(url.pathname==='/community')return communityHandler(req,res,repo);if(url.pathname==='/admin')return adminExportHandler(req,res,repo);res.statusCode=404;res.end();});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));origin=`http://127.0.0.1:${server.address().port}`;});
+before(async()=>{server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');if(url.pathname==='/response')return responseHandler(req,res,repo);if(url.pathname==='/community')return communityHandler(req,res,repo);res.statusCode=404;res.end();});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));origin=`http://127.0.0.1:${server.address().port}`;});
 after(async()=>{await new Promise(resolve=>server.close(resolve));});
 const body={ranking:['G1','G2','G3','G5','G4'],connections:['resident'],email:'',newsletterOptIn:false,planningOptIn:false,feedback:'Protect the right to remain.'};
 async function req(path,options={}){const r=await fetch(origin+path,options);const data=await r.text();let result;try{result=JSON.parse(data);}catch{result=data;}return {status:r.status,body:result};}
@@ -46,29 +46,10 @@ test('email required when opt-in is selected; bad ranking rejected',async()=>{
  assert.equal(contact.status,201);
  assert.equal((await req('/community')).body.count,2);
 });
-test('admin export rejects missing key; CSV neutralizes formulas',async()=>{
- assert.equal((await req('/admin')).status,503);
-});
 test('private deletion removes the response from aggregates',async()=>{
  const {id,token}=globalThis.created;
  const removed=await req('/response?id='+id,{method:'DELETE',headers:{Authorization:'Bearer '+token}});
  assert.equal(removed.status,200);
  assert.equal((await req('/community')).body.count,1);
  assert.equal((await req('/response?id='+id,{headers:{Authorization:'Bearer '+token}})).status,404);
-});
-
-test('authorized administrator export prevents spreadsheet formula execution and excludes token hash',async()=>{
-  const previous=process.env.ADMIN_EXPORT_KEY;
-  process.env.ADMIN_EXPORT_KEY='a-long-test-admin-export-key-123456789012345';
-  try {
-    const row=await post({...body,feedback:'=HYPERLINK("https://example.org","click")'});
-    assert.equal(row.status,201);
-    const exported=await req('/admin',{headers:{Authorization:'Bearer '+process.env.ADMIN_EXPORT_KEY}});
-    assert.equal(exported.status,200);
-    assert.ok(exported.body.includes("'=HYPERLINK"),'CSV formula was not neutralized');
-    assert.equal(exported.body.includes('token_hash'),false);
-    assert.equal(exported.body.includes(row.body.token),false);
-  }finally{
-    if(previous===undefined)delete process.env.ADMIN_EXPORT_KEY;else process.env.ADMIN_EXPORT_KEY=previous;
-  }
 });

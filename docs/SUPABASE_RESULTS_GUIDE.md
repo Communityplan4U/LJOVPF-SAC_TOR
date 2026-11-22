@@ -1,28 +1,37 @@
 # Review SAC TOR assessment results in Supabase
 
-**Project:** [LJOVPF-SAC_TOR](https://supabase.com/dashboard/project/rwrvsuheybpqelbtjaha).
-This database is independent of the Little Jamaica Planning Framework and Mapping projects.
+Use your existing Supabase account and open the [Canadian SAC project, LJOVPF-SAC_TOR](https://supabase.com/dashboard/project/rwrvsuheybpqelbtjaha). Its project reference is `rwrvsuheybpqelbtjaha` and its region is Canada Central (`ca-central-1`). Owner reporting follows the Framework Tool's Supabase dashboard workflow, using the SAC's own data and views.
 
-**Data residency:** The SAC project is hosted in Canada Central (`ca-central-1`), matching the Planning Framework Assessment database region.
+## View individual responses and summaries
 
-## Owner reporting
+In **Table Editor**, choose the `survey_private` schema. The following views are available to authorized project operators:
 
-In the SAC project, open **SQL Editor** using your authorized project account. Run the read-only queries from [supabase/owner_queries.sql](../supabase/owner_queries.sql). The restricted `survey_private` views expose the following only to privileged operators:
+| View | Contents |
+| --- | --- |
+| `v_responses` | Current responses, optional email and comments, separate opt-ins, neighbourhood connections and governance-area rankings |
+| `v_governance_weights` | Each response's five governance-area positions and 30/25/20/15/10 weights |
+| `v_participation` | Submitted and revised-response counts by source version |
+| `v_governance_area_summary` | Mean, minimum and maximum assigned weight for each area |
+| `v_rank_history` | Previous ranking revisions, without emails or comments |
 
-- **v_participation:** submitted and revised response counts by source version
-- **v_responses:** response records with optional email, comments, opt-ins, and governance-area ranking
-- **v_governance_weights:** the five governance areas, each response's rank, and 30/25/20/15/10 position weights
-- **v_governance_area_summary:** mean, minimum, and maximum assigned weight by area
-- **v_rank_history:** appended ranking revisions without emails or comments
+Alternatively, open **SQL Editor** and run a selected query from [supabase/owner_queries.sql](../supabase/owner_queries.sql).
 
-The public community-comparison endpoint returns counts and average weights only, including the first completed submission. A later revision replaces the prior ranking in the average. One individual may still complete more than one independent response.
+## Export responses to CSV
 
-## Privacy and security
+1. Open **SQL Editor** in the SAC project.
+2. Copy the first query under **CSV-ready response export** in `supabase/owner_queries.sql`.
+3. Run that query, then export its results as CSV.
 
-Both SAC tables use RLS with no `anon` or `authenticated` access policies. The private reporting schema is not granted to those roles. The Edge Function uses separate, randomly generated service-to-service gateway tokens with SHA-256 digests configured as Supabase Edge secrets; the database service-role key remains inside Supabase.
+The export includes the same response information as the former administrator endpoint: response ID, creation/update times, revision, ranking, neighbourhood connections, optional email, newsletter and planning-update preferences, and comments. It excludes private-token hashes. Email or comments that begin like spreadsheet formulas are prefixed with an apostrophe, preserving the previous export's spreadsheet protection. Other owner queries provide participation, weight distribution and ranking history.
 
-The administrator CSV route requires both an administrator key and the dedicated administrator gateway token. Do not share raw exports publicly. Run [supabase/reporting.sql](../supabase/reporting.sql) to check permissions.
+Access is controlled by your Supabase project account. There is no separate application administrator login or export password. The public app's gateway cannot request bulk response exports. Raw `v_responses` exports do not apply the CSV query's formula protection; use the CSV-ready query for spreadsheet files.
 
-**Deployment status:** Schema, reporting views, and the survey-storage Edge Function are installed. Gateway tokens and matching Supabase digest secrets still require configuration; until then, the Edge Function rejects unauthorized requests. Live end-to-end Vercel integration has not been tested.
+## Privacy and operation
 
-**Safety:** Do not paste private credentials into GitHub, chat, or a public website. The SAC tool remains separate from the established Planning Framework database.
+Both SAC tables use row-level security and deny table access to `anon` and `authenticated`. The `survey_private` schema is also restricted. Privileged Supabase collaborators can access owner reports according to their project permissions. Optional contact information and comments should remain in authorized owner reports.
+
+The public community-comparison endpoint returns counts and average weights, starting with the first completed response. A one-response average equals that person's choices. Revisions replace the same response's previous weighting in the current average; independent responses are not proof of unique people. Deleting a response also deletes its rank history.
+
+Run [supabase/reporting.sql](../supabase/reporting.sql) to inspect grants and reporting integrity. The Edge Function authenticates the server's gateway token against the `SAC_GATEWAY_TOKEN_SHA256` secret. The database service credential remains inside Supabase.
+
+The schema, reporting views and `survey-storage` Edge Function are installed. Production gateway configuration and live end-to-end saving still need verification before launch. See [README — Connect the SAC deployment](../README.md#connect-the-sac-deployment) and `.env.example` for the current configuration.
