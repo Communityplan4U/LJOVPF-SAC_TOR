@@ -1,7 +1,8 @@
 import test,{before,after} from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import {MemoryRepository} from '../server/lib/repository.mjs';
+import gateway from '../server/gateway.cjs';
+const {MemoryRepository}=gateway;
 import {responseHandler,communityHandler,adminExportHandler} from '../server/lib/handlers.mjs';
 const repo=new MemoryRepository();let server,origin;
 before(async()=>{server=http.createServer(async(req,res)=>{const url=new URL(req.url,'http://localhost');if(url.pathname==='/response')return responseHandler(req,res,repo);if(url.pathname==='/community')return communityHandler(req,res,repo);if(url.pathname==='/admin')return adminExportHandler(req,res,repo);res.statusCode=404;res.end();});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));origin=`http://127.0.0.1:${server.address().port}`;});

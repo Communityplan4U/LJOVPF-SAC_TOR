@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "npm run build && node server/dev.mjs",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs && node --experimental-strip-types --test tests/*.edge.mjs",
     "validate:assessment": "node scripts/validate-assessment.mjs data/assessment.json",
     "validate:publication": "node scripts/validate-assessment.mjs data/assessment.json --publish",
     "build": "node scripts/build.mjs"

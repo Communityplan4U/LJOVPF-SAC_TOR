@@ -43,7 +43,9 @@ api/community.js             Aggregate average weights, no identifiable results
 api/admin/export.js          Administrator-only CSV export
 api/health.js                Non-sensitive readiness information
 lib/handlers.mjs             Input validation and private token authentication
-lib/repository.mjs           Server-only Supabase REST access
+server/gateway.cjs           Vercel Edge gateway adapter and local-memory test store
+supabase/functions/survey-storage/index.ts   Restricted Supabase database operations
+supabase/config.toml           Edge Function authentication configuration
 server/dev.mjs               Local ephemeral memory development server
 supabase/schema.sql   Dedicated tables, RLS, grants, aggregate RPC
 scripts/validate-assessment.mjs    Publication gate
@@ -81,7 +83,7 @@ Provision a **dedicated Supabase project** in the intended organization, prefera
 - `public.ljovsac_rank_revisions` stores append-only ranking revision history; it does **not** duplicate contact details or comments. Deleting a response deletes its rank revisions.
 - `public.ljovsac_public_average()` is executable only by server-side service role, and returns only `{count, averages}`.
 - The server stores a **SHA-256 hash** of each high-entropy private token, never the token itself. Read/revision/deletion require the private token; old revisions cannot silently overwrite newer ones.
-- The public app never receives a Supabase key. Only Vercel's server functions hold the service-role JWT.
+- The public app never receives a Supabase key. Only Supabase Edge Functions hold the service-role credential; Vercel holds opaque gateway tokens.
 
 ## Deploy the separate Vercel project
 
@@ -91,14 +93,17 @@ Set the following server-side environment variables in **Vercel Project Settings
 
 ```text
 SUPABASE_URL
-SUPABASE_SERVICE_ROLE_KEY
+SURVEY_GATEWAY_TOKEN
+SURVEY_GATEWAY_ADMIN_TOKEN
 ADMIN_EXPORT_KEY
 PUBLIC_ORIGINS=https://communityinpublic.ca,https://www.communityinpublic.ca
 ```
 
 `PUBLIC_ORIGINS` lists allowed public website origins for submissions forwarded through the `/ljovsac` reverse proxy. Keep it limited to the actual website and any trusted preview origins. Set `ADMIN_EXPORT_KEY` to a randomly generated secret of at least 32 characters. Create it using your password manager or a local cryptographic random generator. Do not use `NEXT_PUBLIC_` or public build variables for any of these.
 
-The build uses `public/` static assets, `api/` Node.js serverless handlers and the included `vercel.json`; no build step or third-party packages are required. Test `GET /api/health`, a created response, private resume/revision, and `GET /api/community` after applying the SAC schema. Confirm that unauthenticated raw requests to the database tables are denied.
+Deploy the restricted `survey-storage` Supabase Edge Function and configure `supabase/config.toml`: `verify_jwt = false` applies only to this function because it verifies its own high-entropy service-to-service tokens. Configure independent SHA-256 digest secrets `SAC_GATEWAY_TOKEN_SHA256` and `SAC_GATEWAY_ADMIN_TOKEN_SHA256` in Supabase, matching separate Vercel `SURVEY_GATEWAY_TOKEN` and `SURVEY_GATEWAY_ADMIN_TOKEN` values. Keep Supabase service-role credentials in Supabase only. The regular gateway token cannot export private responses, and the administrator gateway token is accepted only for that restricted export operation.
+
+The build uses `public/` static assets, `api/` Node.js serverless handlers and the included `vercel.json`; no build step or third-party packages are required. Test `GET /api/health`, a created response, private resume/revision, an authorized export, and `GET /api/community` after applying the SAC schema and deploying the Edge Function. Confirm that unauthenticated raw requests to the database tables are denied.
 
 ### Proposed `communityinpublic.ca/ljovsac` path
 
