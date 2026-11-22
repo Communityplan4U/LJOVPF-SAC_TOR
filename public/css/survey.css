@@ -62,7 +62,7 @@ button.secondary,.rank-buttons button,.scope button{background:#fff;color:#4e305
 /* Four-step 12-component TOR-only companion preview */
 :root{--ink:#261d2d;--purple:#60367a;--light:#f3edf7;--line:#e9dfee}
 #progress{height:4px;background:#e3d7e9;overflow:hidden}#progressbar{height:100%;width:25%;background:#6d437c;transition:width .23s}
-.lead{padding-bottom:14px}.lead h1{max-width:920px}.lead p{max-width:910px}.wide.layout{padding-top:18px}
+.lead{padding-bottom:14px}.wide.layout{padding-top:18px}
 .sidebar .small-card{border-radius:12px;background:#f7f1fa;border:1px solid #decde6;padding:14px;margin-top:18px;font-size:.83rem;color:#5a4766}
 .sidebar .small-card strong{display:block;margin-bottom:6px;font-size:.89rem}.sidebar .small-card .flow-num{display:block;font-weight:900;font-size:1.48rem;color:#59356d;margin-top:4px}
 .safety-note{padding:15px 17px;background:#fff8eb;border:1px solid #ecd39b;border-left:4px solid #bd8c32;color:#584321;border-radius:12px;font-size:.86rem;line-height:1.5;margin-bottom:20px}
