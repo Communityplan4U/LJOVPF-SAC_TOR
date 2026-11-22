@@ -45,7 +45,7 @@ api/health.js                Non-sensitive readiness information
 lib/handlers.mjs             Input validation and private token authentication
 lib/repository.mjs           Server-only Supabase REST access
 server/dev.mjs               Local ephemeral memory development server
-supabase/migrations/001_create_ljovsac_storage.sql   Dedicated tables, RLS, grants, aggregate RPC
+supabase/schema.sql   Dedicated tables, RLS, grants, aggregate RPC
 scripts/validate-assessment.mjs    Publication gate
 ```
 
@@ -75,7 +75,7 @@ For a standalone *design review*, open the companion `LJOVPF_SAC_TOR_Full_Build_
 
 ## Separate database setup (required for live saving)
 
-Provision a **dedicated Supabase project** in the intended organization, preferably Canada Central. This is an isolated project, not a schema in the existing Little Jamaica Planning Framework survey project. Supabase creation may add cost and requires the user's confirmation where applicable. Apply `supabase/migrations/001_create_ljovsac_storage.sql` to the new project's SQL Editor and confirm the following before deploying:
+Provision a **dedicated Supabase project** in the intended organization, preferably Canada Central. This is an isolated project, not a schema in the existing Little Jamaica Planning Framework survey project. Supabase creation may add cost and requires the user's confirmation where applicable. Apply `supabase/schema.sql` to the new project's SQL Editor and confirm the following before deploying:
 
 - `public.ljovsac_responses` has RLS enabled and no access for `anon` or `authenticated` roles.
 - `public.ljovsac_rank_revisions` stores append-only ranking revision history; it does **not** duplicate contact details or comments. Deleting a response deletes its rank revisions.
@@ -98,7 +98,7 @@ PUBLIC_ORIGINS=https://communityinpublic.ca,https://www.communityinpublic.ca
 
 `PUBLIC_ORIGINS` lists allowed public website origins for submissions forwarded through the `/ljovsac` reverse proxy. Keep it limited to the actual website and any trusted preview origins. Set `ADMIN_EXPORT_KEY` to a randomly generated secret of at least 32 characters. Create it using your password manager or a local cryptographic random generator. Do not use `NEXT_PUBLIC_` or public build variables for any of these.
 
-The build uses `public/` static assets, `api/` Node.js serverless handlers and the included `vercel.json`; no build step or third-party packages are required. Test `GET /api/health`, a created response, private resume/revision, and `GET /api/community` after applying the migration. Confirm that unauthenticated raw requests to the database tables are denied.
+The build uses `public/` static assets, `api/` Node.js serverless handlers and the included `vercel.json`; no build step or third-party packages are required. Test `GET /api/health`, a created response, private resume/revision, and `GET /api/community` after applying the SAC schema. Confirm that unauthenticated raw requests to the database tables are denied.
 
 ### Proposed `communityinpublic.ca/ljovsac` path
 
