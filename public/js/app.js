@@ -133,17 +133,19 @@ function areaMatrix(order=START,weighted=false){
  const rows=bodies.map(cp=>{
   const cells=DATA.areas.map(a=>{
     const net=approved()?areaResult(DATA,cp.id,a.id,order,weighted):null;
-    const rank=net===null?null:areaRank(DATA,cp.id,a.id,order,weighted);
+    // Step 3 compares the selected weights with the starting weights; area ranks are independent of weighting.
+    const defaultNet=weighted&&net!==null?areaResult(DATA,cp.id,a.id,START,true):null;
+    const rank=net===null?null:areaRank(DATA,cp.id,a.id,START,false);
     const cls=net===null?'zero':net>0.00001?'pos':net<-.00001?'neg':'zero';
-    return `<td><div class="ga-cell ${cls}"><strong>${net===null?'—':weighted?fmt(net):(net>0?'+':'')+net}</strong>${(!weighted&&net!==null)?`<span class="ga-outof"> / ${members(a.id).length}</span>`:''}<span class="ga-rank">${rank===null?'Not rated':'Rank '+rank}</span></div></td>`;
+    return `<td><div class="ga-cell ${cls}"><strong>${net===null?'—':weighted?fmt(net):(net>0?'+':'')+net}</strong>${weighted?`<span class="ga-default-score">Default ${fmt(defaultNet)}</span>`:""}${(!weighted&&net!==null)?`<span class="ga-outof"> / ${members(a.id).length}</span>`:''}<span class="ga-rank">${rank===null?'Not rated':'Rank '+rank}</span></div></td>`;
   }).join('');
   return `<tr class="${cp.id==='ljovpf'?'ga-reference':''}"><th scope="row"><strong class="ga-body-name">${esc(cp.name)}</strong><small class="ga-body-kind">${esc(cp.body)}</small></th>${cells}</tr>`;
  }).join('');
  return `<section class="subpanel" aria-label="Governance-area comparison">
-  <div class="split-intro"><div><h3>Comparison across the five governance areas</h3><p class="help gamatrix-description">${weighted?'See how each governance area contributes to the comparison using the weights you selected.':'Compare the TOR provisions within each governance area. Each area score is the net result of its assessment criteria.'} ${!approved()?'Ratings are pending approval.':''}</p></div></div>
+  <div class="split-intro"><div><h3>Comparison across the five governance areas</h3><p class="help gamatrix-description">${weighted?'The bold number is your weighted contribution; the smaller Default value uses the starting weights. Rankings within each governance area do not change.':'Compare the TOR provisions within each governance area. Each area score is the net result of its assessment criteria.'} ${!approved()?'Ratings are pending approval.':''}</p></div></div>
   <div class="ga-legend"><span class="ga-legend-item"><i class="ga-legend-swatch"></i> Positive: comparator scores higher</span><span class="ga-legend-item"><i class="ga-legend-swatch neutral"></i> Zero: net scores tied</span><span class="ga-legend-item"><i class="ga-legend-swatch negative"></i> Negative: LJOVPF scores higher</span></div>
   <div class="ga-table-shell" tabindex="0" role="region" aria-label="Comparison across all five governance areas; scroll horizontally if necessary"><table class="ga-table"><thead><tr><th scope="col">Advisory body</th>${columns}</tr></thead><tbody>${rows}</tbody></table></div>
-  <p class="ga-bottomnote">${weighted?'Values show each area’s contribution to the overall weighted net score.':'Values show each area’s net rating before area weights are applied.'} A zero may reflect offsetting provisions rather than identical TORs. Ties share a rank; unrated bodies receive no rank.</p>
+  <p class="ga-bottomnote">${weighted?'Each area shows your weighted contribution and its Default contribution. Rankings use the original written-TOR judgments and stay unchanged when area weights change.':'Values show each area’s net rating before area weights are applied.'} A zero may reflect offsetting provisions rather than identical TORs. Ties share a rank; unrated bodies receive no rank.</p>
  </section>`;
 }
 function evidenceSection(){

@@ -108,6 +108,7 @@ button.secondary,.rank-buttons button,.scope button{background:#fff;color:#4e305
 .ga-cell.neg{background:#faead8;color:#7b4b1b}
 .ga-cell strong{font-size:1rem;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}
 .ga-cell .ga-outof{font-size:.67rem;font-weight:550;white-space:nowrap;opacity:.75}
+.ga-cell .ga-default-score{display:block;font-size:.68rem;font-weight:550;line-height:1.2;margin-top:3px;white-space:nowrap;opacity:.82;font-variant-numeric:tabular-nums}
 .ga-cell .ga-rank{display:block;font-size:.69rem;margin-top:4px;font-weight:650;white-space:nowrap}
 .ga-table tbody tr:last-child th,.ga-table tbody tr:last-child td{border-bottom:0}
 .ga-bottomnote{margin:12px 0 0;color:#766581;font-size:.77rem}
