@@ -221,7 +221,7 @@ const TOR_CARD_META = {
   }
 };
 
-function sourceLink(cp){return cp.url?`<a class="source-link" href="${esc(cp.url)}" target="_blank" rel="noopener noreferrer">View written TOR ↗</a>`:cp.study_url?'<span class="source-warning">Written TOR not verified</span>':'<span class="source-warning">Source unavailable</span>';}
+function sourceLink(cp){return cp.url?:cp.study_url?'<span class="source-warning">Written TOR not verified</span>':'<span class="source-warning">Source unavailable</span>';}
 
 function rowResult(cp) {
   const meta = TOR_CARD_META[cp.id] || {};
@@ -322,7 +322,7 @@ const meaning=v=>v===1?'LJOVPF TOR is weaker':v===-1?'LJOVPF TOR is stronger':v=
   }).join('')}</div></details>`).join('');
  return `<section class="subpanel" id="evidence"><h3>Assessments Summary</h3><p class="help">Select an advisory body to review the LJOVPF SAC against its comparitors. These descriptions summarize the documents - they are not verbatim quotations. Only what the TORs say is assessed, not their implementation.</p>
  <div class="select-row"><label for="evidence-comparator">Advisory body to examine</label><select id="evidence-comparator">${DATA.comparators.filter(x=>x.id!=='ljovpf').map(x=>`<option value="${esc(x.id)}" ${cp.id===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
- <p class="help" style="margin-top:12px">${sourceLink(cp)} · Comparison uses the approved 12-criterion documentary assessment.</p>${groups}</section>`;
+ <p class="help" style="margin-top:12px">${sourceLink(cp)} </p>${groups}</section>`;
 }
 function stepOne(){
  const results=ranked(START);
