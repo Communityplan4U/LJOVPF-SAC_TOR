@@ -79,4 +79,34 @@ revoke all on function public.ljovsac_public_average() from public,anon,authenti
 revoke all on function ljovsac_internal.record_rank_revision() from public,anon,authenticated;
 grant execute on function public.ljovsac_public_average() to service_role;
 grant execute on function ljovsac_internal.record_rank_revision() to service_role;
+
+-- Owner-only, security-invoker reporting views (Framework-style).
+create schema if not exists survey_private;
+revoke all on schema survey_private from public,anon,authenticated;
+grant usage on schema survey_private to service_role;
+create or replace view survey_private.v_responses with (security_invoker=true) as
+select id as response_id,version as source_version,created_at,updated_at,revision as last_revision,email,
+ newsletter_opt_in as newsletter,planning_opt_in as planning_updates,connections as neighbourhood_connections,
+ feedback as comments,ranking as governance_area_ranking,true as survey_completed
+from public.ljovsac_responses;
+create or replace view survey_private.v_governance_weights with (security_invoker=true) as
+select r.id as response_id,r.version as source_version,j.value as governance_area_id,
+ j.ordinality::integer as rank_position,
+ (case j.ordinality when 1 then 30 when 2 then 25 when 3 then 20 when 4 then 15 when 5 then 10 end)::numeric as area_weight,r.updated_at
+from public.ljovsac_responses r
+cross join lateral jsonb_array_elements_text(r.ranking) with ordinality as j(value,ordinality);
+create or replace view survey_private.v_participation with (security_invoker=true) as
+select version as source_version,count(*)::bigint as completed,
+ count(*) filter (where revision>1)::bigint as revised,
+ min(created_at) as first_response_at,max(updated_at) as latest_response_at
+from public.ljovsac_responses group by version;
+create or replace view survey_private.v_rank_history with (security_invoker=true) as
+select response_id,revision,ranking,recorded_at from public.ljovsac_rank_revisions;
+create or replace view survey_private.v_governance_area_summary with (security_invoker=true) as
+select source_version,governance_area_id,count(*)::bigint as responses,round(avg(area_weight),2) as average_weight,
+ min(area_weight) as minimum_weight,max(area_weight) as maximum_weight
+from survey_private.v_governance_weights group by source_version,governance_area_id;
+revoke all on all tables in schema survey_private from public,anon,authenticated;
+grant select on all tables in schema survey_private to service_role;
+
 commit;

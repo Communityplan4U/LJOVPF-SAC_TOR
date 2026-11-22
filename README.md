@@ -134,3 +134,11 @@ An administrator with the `ADMIN_EXPORT_KEY` may request a CSV from `GET /api/ad
 - The community mean is across completed *saved responses*, **not proven unique persons**. Return-link revisions count only once per saved response; one person can create multiple links. The interface does not claim statistical representativeness.
 - Under the accepted first-response rule, the first published average may equal one person's choice. This is disclosed prominently in Step 4.
 - The existing Planning Framework application and its data stay untouched.
+
+## SAC Supabase project and owner reporting (November 2026)
+
+The isolated [LJOVPF-SAC_TOR Supabase project](https://supabase.com/dashboard/project/xdcjffvowvhpjdtpodmw) has the SAC schema, private reporting views, and `survey-storage` Edge Function installed. It is in **US West (Oregon)**, whereas the Framework Assessment project is in **Canada Central**. Review the data-residency implications for optional email addresses and comments before public collection.
+
+Use `supabase/owner_queries.sql` and `supabase/reporting.sql` to inspect private participation, governance-area weights, historical rankings and access permissions in the authorized SQL Editor. The [SAC Supabase results guide](docs/SUPABASE_RESULTS_GUIDE.md) explains each view. The repository's `supabase/schema.sql` now includes both the SAC application tables and the private owner reporting views.
+
+**Connection remains intentionally pending:** configure separate `SURVEY_GATEWAY_TOKEN` and `SURVEY_GATEWAY_ADMIN_TOKEN` in Vercel, and their SHA-256 digest equivalents `SAC_GATEWAY_TOKEN_SHA256` and `SAC_GATEWAY_ADMIN_TOKEN_SHA256` in Supabase Edge Function secrets. Do not share these secrets in GitHub or chat. Until configured, the Edge Function rejects callers. Live Vercel-to-Supabase response saving and export remain unverified; do not invite public responses yet.
