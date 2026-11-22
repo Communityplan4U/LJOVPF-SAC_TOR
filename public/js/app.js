@@ -5,7 +5,7 @@
 import {AREA_IDS,POSITION_WEIGHTS,validOrder,weightsFor,completeComparator,areaResult,areaRank,comparison,validateAssessment} from './scoring.js';
 
 const STEPS=[
-  {title:'Compare the Terms of Reference',short:'Compare the TORs',desc:'  
+  {title:'Compare the Terms of Reference',short:'Compare the TORs',desc:'  '},
   {title:'Rank governance areas by impact',short:'Rank what matters',desc:'Put the five governance areas in the order you believe they affect community wellbeing. Every area remains part of the comparison.'},
   {title:'See your updated comparison',short:'Your updated comparison',desc:'Compare the starting results with those based on your priorities. Your ranking changes how much each governance area counts—not what the TORs say.'},
   {title:'Compare your priorities with others',short:'Community priorities',desc:'Compare the weight you assigned to each governance area with the average across completed responses to this SAC Terms of Reference assessment.'}
