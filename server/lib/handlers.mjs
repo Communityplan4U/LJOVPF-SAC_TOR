@@ -4,7 +4,7 @@ import {sendPrivateReturnLink} from './mailer.mjs';
 
 const MAX_BYTES=13000;
 const CONNECTIONS=new Set(['resident','former','business','worker','visit','representation','other']);
-const isEmail=v=>!v||(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)&&v.length<=254);
+const isEmail=v=>!v||v.length<=254;
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
 const sha=token=>crypto.createHash('sha256').update(token).digest('hex');
 const hashMatches=(hash,token)=>typeof hash==='string'&&hash.length===64&&crypto.timingSafeEqual(Buffer.from(hash,'hex'),Buffer.from(sha(token),'hex'));
@@ -22,7 +22,7 @@ function validatePayload(data){
   if(!data||!validOrder(data.ranking))throw Object.assign(new Error('Select all five governance areas in order.'),{status:422});
   if(!Array.isArray(data.connections)||data.connections.length>7||data.connections.some(x=>!CONNECTIONS.has(x)))throw Object.assign(new Error('Invalid neighbourhood connection choices.'),{status:422});
   const email=typeof data.email==='string'?data.email.trim():'';
-  if(!isEmail(email))throw Object.assign(new Error('Please enter a valid email address.'),{status:422});
+if(!isEmail(email))throw Object.assign(new Error('Please keep your email entry under 254 characters.'),{status:422});
   const newsletter=data.newsletterOptIn===true, planning=data.planningOptIn===true;
   if((newsletter||planning)&&!email)throw Object.assign(new Error('An email address is required to receive updates.'),{status:422});
   const feedback=typeof data.feedback==='string'?data.feedback.trim():'';
