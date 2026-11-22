@@ -124,8 +124,156 @@ function scorebar(score){
  const pct=Math.min(50,Math.abs(score)/12*48);
  return `<div class="relative-track demo-track" aria-label="Net score ${fmt(score)}"><span class="zero-axis"></span><i class="${score>=0?'positive-bar':'negative-bar'}" style="left:${score>=0?50:50-pct}%;width:${pct}%"></i></div>`;
 }
+
+/* Display-only metadata for the SAC TOR comparison cards.
+   Dates refer to the TOR document, not the final planning report.
+   Councillors are current as of November 2026.
+   Historic City team names are retained where applicable.
+   These fields do not affect assessment scores. */
+
+const TOR_CARD_META = {
+  ljovpf: {
+    date: "September 25, 2026",
+    wards: "Wards 5, 8, 9 and 12",
+    councillors: "Chiara Padovani; Mike Colle; Alejandra Bravo; Josh Matlow",
+    lead: "Development Review — Toronto & East York North, Midtown Section",
+    support: "Not confirmed"
+  },
+
+  comp1: {
+    date: "March 2025",
+    wards: "Wards 10 and 11",
+    councillors: "Ausma Malik; Mike Layton",
+    lead: "Development Review — Toronto & East York South, South Section",
+    support: "City Planning — Chinatown Tomorrow project team"
+  },
+
+  comp2: {
+    date: "Not stated in TOR (LAC active by October 2025)",
+    wards: "Ward 5 — York South-Weston",
+    councillors: "Chiara Padovani",
+    lead: "Development Review — Community Planning, Etobicoke York District",
+    support: "City Planning — Urban Design; Heritage Planning"
+  },
+
+  comp3: {
+    date: "Not confirmed (LAC active by November 2023)",
+    wards: "Ward 18 — Willowdale",
+    councillors: "Lily Cheng",
+    lead: "City Planning — Strategic Initiatives, Policy & Analysis; Development Review — Community Planning, North York",
+    support: "Not confirmed"
+  },
+
+  comp4: {
+    date: "Not stated in TOR (LAC active by April 2021)",
+    wards: "Ward 5 — York South-Weston",
+    councillors: "Chiara Padovani",
+    lead: "City Planning — Community Planning, Etobicoke York District",
+    support: "Parks, Forestry & Recreation; Transportation Services; Economic Development & Culture; Social Development, Finance & Administration (study contributors)"
+  },
+
+  comp5: {
+    date: "Not stated in TOR (Working Group active by December 2017)",
+    wards: "Ward 4 — Parkdale-High Park",
+    councillors: "Diana Chan McNally",
+    lead: "City Planning — Community Planning, Etobicoke York District",
+    support: "City Planning — Urban Design"
+  },
+
+  comp6: {
+    date: "August 24, 2021",
+    wards: "Ward 7 — Humber River-Black Creek",
+    councillors: "Anthony Perruzza",
+    lead: "City Planning — Jane Finch Initiative",
+    support: "Jane Finch Community and Family Centre (CAC facilitation partner)"
+  },
+
+  comp7: {
+    date: "May 2021 (TOR agreed at first meeting)",
+    wards: "Wards 8, 12 and 15",
+    councillors: "Mike Colle; Josh Matlow; Rachel Chernos Lin",
+    lead: "City Planning — Canada Square Special Study Area",
+    support: "Inter-divisional City team, including Parks, Forestry & Recreation; Children's Services; Economic Development & Culture; Transportation Services; CreateTO; TTC"
+  },
+
+  comp8: {
+    date: "August 2014",
+    wards: "Ward 14 — Toronto-Danforth",
+    councillors: "Sara Ehrhardt",
+    lead: "City Planning — Community Planning, Toronto & East York District",
+    support: "Not confirmed"
+  },
+
+  comp9: {
+    date: "December 2021",
+    wards: "Wards 24 and 25",
+    councillors: "Paul Ainslie; Neethan Shan",
+    lead: "City Planning — Community Planning, Scarborough District",
+    support: "City Planning — Urban Design, Scarborough District"
+  },
+
+  comp10: {
+    date: "Not separately dated (TOR published in November 2015 report)",
+    wards: "Citywide — all wards",
+    councillors: "All ward councillors",
+    lead: "Social Development, Finance & Administration — Seniors Strategy coordination",
+    support: "Multiple City divisions and agencies represented on the Accountability Table"
+  }
+};
+
 function sourceLink(cp){return cp.url?`<a class="source-link" href="${esc(cp.url)}" target="_blank" rel="noopener noreferrer">View written TOR ↗</a>`:cp.study_url?'<span class="source-warning">Written TOR not verified</span>':'<span class="source-warning">Source unavailable</span>';}
-function rowResult(cp){return `<div class="score-row ${cp.id==='ljovpf'?'home-score':''}"><span class="rank-number">${cp.rank??'—'}</span><div class="score-name">${esc(cp.name)} <small>${esc(cp.body)}</small></div><span class="big-score ${signed(cp.score)}">${fmt(cp.score)}</span>${scorebar(cp.score)}<div class="score-actions">${cp.id==='ljovpf'?'':`<button type="button" class="text-btn" data-review="${esc(cp.id)}">Review assessment</button>`}${sourceLink(cp)}</div></div>`;}
+
+function rowResult(cp) {
+  const meta = TOR_CARD_META[cp.id] || {};
+
+  const title = `${cp.name} · ${cp.body}`;
+
+  const titleLink = cp.url
+    ? `<a class="framework-link"
+         href="${esc(cp.url)}"
+         target="_blank"
+         rel="noopener noreferrer"
+         title="Open the Terms of Reference">
+         ${esc(title)}
+         <span aria-hidden="true">↗</span>
+       </a>`
+    : `<span>${esc(title)} (TOR link unavailable)</span>`;
+
+  return `
+    <div class="score-row relative-score-row tor-score-row ${cp.id === 'ljovpf' ? 'home-score' : ''}">
+
+      <span class="score-rank">
+        ${cp.rank ?? '—'}
+      </span>
+
+      <span class="score-name">
+        ${titleLink}
+
+        <small>
+          TOR date: ${esc(meta.date || 'Not confirmed')}
+          · ${esc(meta.wards || 'Ward not confirmed')}
+          · Current councillor(s): ${esc(meta.councillors || 'Not confirmed')}
+        </small>
+      </span>
+
+      <strong class="tor-score ${signed(cp.score)}">
+        ${fmt(cp.score)}
+      </strong>
+
+      ${scorebar(cp.score)}
+
+      <small class="score-lead">
+        Lead division/team: ${esc(meta.lead || 'Not confirmed')}
+      </small>
+
+      <small class="score-support">
+        Supporting divisions/teams or partners: ${esc(meta.support || 'Not confirmed')}
+      </small>
+
+    </div>`;
+}
+
+
 function areaMatrix(order=START,weighted=false){
  const bodies=ranked(order);
  const labels={G1:'Decision-making & influence',G2:'Timing & participation',G3:'Representation & support',G5:'Transparency & accountability',G4:'Committee governance'};
