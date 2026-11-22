@@ -174,5 +174,138 @@ button.secondary,.rank-buttons button,.scope button{background:#fff;color:#4e305
 .wide.lead p {
   max-width: 100%;
 }
+/* ==========================================
+   SAC TOR comparison cards
+   Match the Framework Assessment card design.
+   Only affects the Step 1 comparison cards.
+   ========================================== */
 
+
+.score-row.tor-score-row {
+display: grid;
+grid-template-columns: 25px minmax(0, 1fr) auto;
+gap: 7px 10px;
+padding: 13px 14px;
+border: 1px solid #e4d9e7;
+border-radius: 12px;
+align-items: start;
+}
+
+/* Small, unboxed rank number */
+.score-row.tor-score-row .score-rank {
+grid-column: 1;
+padding: 0;
+margin: 0;
+background: transparent;
+border: 0;
+border-radius: 0;
+color: #261e2e;
+font-size: 0.82rem;
+font-weight: 400;
+}
+
+/* Linked committee name */
+.score-row.tor-score-row .score-name {
+grid-column: 2;
+min-width: 0;
+font-weight: 650;
+line-height: 1.45;
+}
+
+.score-row.tor-score-row .framework-link {
+color: #503067;
+text-decoration: underline;
+text-decoration-thickness: 1px;
+text-underline-offset: 3px;
+overflow-wrap: anywhere;
+}
+
+.score-row.tor-score-row .framework-link:hover {
+color: #321940;
+}
+
+.score-row.tor-score-row .framework-link span {
+display: inline-block;
+font-size: 0.81em;
+white-space: nowrap;
+}
+
+/* TOR date, ward and councillor information */
+.score-row.tor-score-row .score-name small {
+display: block;
+font-size: 0.76rem;
+color: #766681;
+font-weight: 400;
+line-height: 1.4;
+margin-top: 3px;
+}
+
+/* Compact score aligned at top right */
+.score-row.tor-score-row .tor-score {
+grid-column: 3;
+text-align: right;
+font-size: 1rem;
+font-weight: 700;
+font-variant-numeric: tabular-nums;
+white-space: nowrap;
+line-height: 1.45;
+}
+
+/* Framework-style horizontal score bar */
+.score-row.tor-score-row .relative-track {
+grid-column: 2 / 4;
+min-width: 0;
+height: 13px;
+border-radius: 6px;
+background: #eee8f1;
+position: relative;
+overflow: hidden;
+}
+
+.score-row.tor-score-row .relative-track .zero-axis {
+opacity: 1;
+}
+
+.score-row.tor-score-row .relative-track .positive-bar {
+background: #376e57;
+}
+
+.score-row.tor-score-row .relative-track .negative-bar {
+background: #a05269;
+}
+
+/* Lead and supporting teams below the bar */
+.score-row.tor-score-row .score-lead,
+.score-row.tor-score-row .score-support {
+grid-column: 2 / 4;
+display: block;
+min-width: 0;
+font-size: 0.76rem;
+color: #766681;
+font-weight: 400;
+line-height: 1.4;
+}
+
+/* Preserve the Framework's reference-row styling */
+.score-row.tor-score-row.home-score {
+background: #f4edf9;
+border-color: #c8afd8;
+}
+
+/* Mobile layout */
+@media (max-width: 530px) {
+.score-row.tor-score-row {
+grid-template-columns: 23px minmax(0, 1fr) auto;
+}
+
+.score-row.tor-score-row .tor-score {
+font-size: 0.85rem;
+}
+
+.score-row.tor-score-row .score-name small,
+.score-row.tor-score-row .score-lead,
+.score-row.tor-score-row .score-support {
+font-size: 0.72rem;
+}
+}
 
