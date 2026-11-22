@@ -287,7 +287,7 @@ function areaMatrix(order=START,weighted=false){
     const cls=net===null?'zero':net>0.00001?'pos':net<-.00001?'neg':'zero';
     return `<td><div class="ga-cell ${cls}"><strong>${net===null?'—':weighted?fmt(net):(net>0?'+':'')+net}</strong>${weighted?`<span class="ga-default-score">Default ${fmt(defaultNet)}</span>`:""}${(!weighted&&net!==null)?`<span class="ga-outof"> / ${members(a.id).length}</span>`:''}<span class="ga-rank">${rank===null?'Not rated':'Rank '+rank}</span></div></td>`;
   }).join('');
-  return `<tr class="${cp.id==='ljovpf'?'ga-reference':''}"><th scope="row"><strong class="ga-body-name">${esc(cp.name)}</strong><small class="ga-body-kind">${esc(cp.body)}</small></th>${cells}</tr>`;
+  return `<tr class="${cp.id==='ljovpf'?'ga-reference':''}"><th scope="row"><a class="ga-body-name" href="${esc(cp.url)}" target="_blank" rel="noopener noreferrer" title="Open Terms of Reference">${esc(cp.name)} ↗</a><small class="ga-body-kind">${esc(cp.body)}</small></th>${cells}</tr>`;
  }).join('');
  return `<section class="subpanel" aria-label="Governance-area comparison">
   <div class="split-intro"><div><h3>Comparison across the five governance areas</h3><p class="help gamatrix-description">${weighted?'The bold number is your weighted contribution; the smaller Default value uses the starting weights. Rankings within each governance area do not change.':'Compare the TOR provisions within each governance area. Each area score is the net result of its assessment criteria.'} ${!approved()?'Ratings are pending approval.':''}</p></div></div>
@@ -299,12 +299,15 @@ function areaMatrix(order=START,weighted=false){
 function evidenceSection(){
  const cp=DATA.comparators.find(x=>x.id===STATE.selectedComparator&&x.id!=='ljovpf')||DATA.comparators.find(x=>x.id!=='ljovpf');
  if(!cp)return '';
+  
+const ljov = DATA.comparators.find(x => x.id === 'ljovpf');
+
 const meaning=v=>v===1?'LJOVPF TOR is weaker':v===-1?'LJOVPF TOR is stronger':v===0?'Comparable written provisions':'Not rated'; const groups=DATA.areas.map((a,i)=>`<details class="area-accordion" ${i===0?'open':''}><summary><span class="area-numeral">${i+1}</span><span class="acc-title">${esc(a.name)}<small>${members(a.id).length} assessment criteria</small></span><span class="chev">⌄</span></summary><div class="acc-content">${members(a.id).map(c=>{
    const e=DATA.judgments?.[cp.id]?.[c.id];
    if(!e||e.rating===null)return `<article class="detail-card"><strong>${esc(c.id)} — ${esc(c.name)}</strong><p class="help">Documentary assessment not available.</p></article>`;
    return `<article class="detail-card"><header><div><small>${esc(c.id)} · ${esc(a.name)}</small><h3>${esc(c.name)}</h3></div><span class="tag ${e.rating===1?'tag-w':e.rating===-1?'tag-s':'tag-c'}">
    ${meaning(e.rating)}
-   </span></header><div class="detail-grid"><div><h4>Little Jamaica SAC TOR</h4><p>${esc(e.ljovpf_excerpt)}</p></div><div><h4>${esc(cp.name)} TOR</h4><p>${esc(e.comparator_excerpt)}</p></div></div><div class="rationale"><strong>Assessment</strong><p>${esc(e.rationale)}</p></div>
+   </span></header><div class="detail-grid"><div><h4><a href="${esc(ljov.url)}" target="_blank" rel="noopener noreferrer">Little Jamaica SAC TOR ↗</a></h4><p>${esc(e.ljovpf_excerpt)}</p></div><div><h4><a href="${esc(cp.url)}" target="_blank" rel="noopener noreferrer">${esc(cp.name)} TOR ↗</a></h4><p>${esc(e.comparator_excerpt)}</p></div></div><div class="rationale"><strong>Assessment</strong><p>${esc(e.rationale)}</p></div>
 <div class="help">
   <strong>What this governance area assesses:</strong>
   <ul class="criteria-bullets">
