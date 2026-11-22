@@ -77,7 +77,7 @@ For a standalone *design review*, open the companion `LJOVPF_SAC_TOR_Full_Build_
 
 ## Separate database setup (required for live saving)
 
-Provision a **dedicated Supabase project** in the intended organization, preferably Canada Central. This is an isolated project, not a schema in the existing Little Jamaica Planning Framework survey project. Supabase creation may add cost and requires the user's confirmation where applicable. Apply `supabase/schema.sql` to the new project's SQL Editor and confirm the following before deploying:
+The dedicated **Canada Central Supabase project is now provisioned**. The schema and reporting views from `supabase/schema.sql` have been applied to project `rwrvsuheybpqelbtjaha`. This project is isolated from the Little Jamaica Planning Framework survey. Verify the following before launching:
 
 - `public.ljovsac_responses` has RLS enabled and no access for `anon` or `authenticated` roles.
 - `public.ljovsac_rank_revisions` stores append-only ranking revision history; it does **not** duplicate contact details or comments. Deleting a response deletes its rank revisions.
@@ -137,8 +137,10 @@ An administrator with the `ADMIN_EXPORT_KEY` may request a CSV from `GET /api/ad
 
 ## SAC Supabase project and owner reporting (November 2026)
 
-The isolated [LJOVPF-SAC_TOR Supabase project](https://supabase.com/dashboard/project/xdcjffvowvhpjdtpodmw) has the SAC schema, private reporting views, and `survey-storage` Edge Function installed. It is in **US West (Oregon)**, whereas the Framework Assessment project is in **Canada Central**. Review the data-residency implications for optional email addresses and comments before public collection.
+The isolated [LJOVPF-SAC_TOR Canadian Supabase project](https://supabase.com/dashboard/project/rwrvsuheybpqelbtjaha) has the SAC schema, private reporting views, and `survey-storage` Edge Function installed. It is in **Canada Central (Toronto region, ca-central-1)**, matching the Framework Assessment project's Canadian hosting location.
 
 Use `supabase/owner_queries.sql` and `supabase/reporting.sql` to inspect private participation, governance-area weights, historical rankings and access permissions in the authorized SQL Editor. The [SAC Supabase results guide](docs/SUPABASE_RESULTS_GUIDE.md) explains each view. The repository's `supabase/schema.sql` now includes both the SAC application tables and the private owner reporting views.
+
+**Current database: `rwrvsuheybpqelbtjaha` (Canada Central). The older `rwrvsuheybpqelbtjaha` project is superseded and must not be used for SAC application connections.**
 
 **Connection remains intentionally pending:** configure separate `SURVEY_GATEWAY_TOKEN` and `SURVEY_GATEWAY_ADMIN_TOKEN` in Vercel, and their SHA-256 digest equivalents `SAC_GATEWAY_TOKEN_SHA256` and `SAC_GATEWAY_ADMIN_TOKEN_SHA256` in Supabase Edge Function secrets. Do not share these secrets in GitHub or chat. Until configured, the Edge Function rejects callers. Live Vercel-to-Supabase response saving and export remain unverified; do not invite public responses yet.

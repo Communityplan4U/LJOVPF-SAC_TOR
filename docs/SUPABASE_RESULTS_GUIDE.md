@@ -1,9 +1,9 @@
 # Review SAC TOR assessment results in Supabase
 
-**Project:** [LJOVPF-SAC_TOR](https://supabase.com/dashboard/project/xdcjffvowvhpjdtpodmw).
+**Project:** [LJOVPF-SAC_TOR](https://supabase.com/dashboard/project/rwrvsuheybpqelbtjaha).
 This database is independent of the Little Jamaica Planning Framework and Mapping projects.
 
-**Data residency:** The SAC project is in US West (Oregon), while the Planning Framework Assessment database is in Canada Central. Review privacy notices and data-residency implications before collecting contact details and comments.
+**Data residency:** The SAC project is hosted in Canada Central (`ca-central-1`), matching the Planning Framework Assessment database region.
 
 ## Owner reporting
 
