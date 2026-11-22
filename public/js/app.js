@@ -212,7 +212,7 @@ async function navigate(i){
  if(i>STATE.unlocked+1){showMessage('Complete the earlier steps before continuing.');return;}
  if(STATE.step!==i && (STATE.id || (STATE.step===1 && i>=2) || (STATE.step===2 && i>=3))){
    if(saveTimer){clearTimeout(saveTimer);saveTimer=null;}
-   if(!await saveResponse()){STATE.notice=STATE.saveError||'Your response could not be saved.';render();return;}
+if(!await saveResponse()){STATE.notice='';render();return;}
  }
  STATE.step=i;STATE.unlocked=Math.max(STATE.unlocked,i);render();
  if(i===3)loadCommunity();
