@@ -133,91 +133,91 @@ function scorebar(score){
 
 const TOR_CARD_META = {
   ljovpf: {
-    date: "September 25, 2026",
+    date: "Sept 2026",
     wards: "Wards 5, 8, 9 and 12",
-    councillors: "Chiara Padovani; Mike Colle; Alejandra Bravo; Josh Matlow",
+    councillors: "Josh Matlow Mike Colle; Frances Nunziata; Alejandra Bravo",
     lead: "Development Review — Toronto & East York North, Midtown Section",
-    support: "Not confirmed"
+    support: "City Planning - Heritage"
   },
 
   comp1: {
     date: "March 2025",
     wards: "Wards 10 and 11",
-    councillors: "Ausma Malik; Mike Layton",
+    councillors: "Ausma Malik; Dianne Saxe",
     lead: "Development Review — Toronto & East York South, South Section",
-    support: "City Planning — Chinatown Tomorrow project team"
+    support: "Development Review; City Planning"
   },
 
   comp2: {
-    date: "Not stated in TOR (LAC active by October 2025)",
+    date: "Sept 2025",
     wards: "Ward 5 — York South-Weston",
-    councillors: "Chiara Padovani",
-    lead: "Development Review — Community Planning, Etobicoke York District",
-    support: "City Planning — Urban Design; Heritage Planning"
+    councillors: "Frances Nunziata",
+    lead: "Development Review — Community Planning, Etobicoke York District - Central Section",
+    support: "City Planning — Urban Design; Heritage Planning; Gladki Planning Associates, Edge of the Bush"
   },
 
   comp3: {
-    date: "Not confirmed (LAC active by November 2023)",
+    date: "Oct 2023",
     wards: "Ward 18 — Willowdale",
     councillors: "Lily Cheng",
     lead: "City Planning — Strategic Initiatives, Policy & Analysis; Development Review — Community Planning, North York",
-    support: "Not confirmed"
+    support: "None confirmed"
   },
 
   comp4: {
-    date: "Not stated in TOR (LAC active by April 2021)",
+    date: "Mar 2021",
     wards: "Ward 5 — York South-Weston",
-    councillors: "Chiara Padovani",
-    lead: "City Planning — Community Planning, Etobicoke York District",
-    support: "Parks, Forestry & Recreation; Transportation Services; Economic Development & Culture; Social Development, Finance & Administration (study contributors)"
+    councillors: "Frances Nunziata",
+    lead: "City Planning — Community Planning, Etobicoke York Central and South Sections",
+    support: "More than 4 divisions, including: Economic Development & Culture; Social Development, Finance & Administration"
   },
 
   comp5: {
-    date: "Not stated in TOR (Working Group active by December 2017)",
-    wards: "Ward 4 — Parkdale-High Park",
-    councillors: "Diana Chan McNally",
+    date: "Nov 2017",
+    wards: "Ward 13 — Parkdale-High Park (pre ward-mash)",
+    councillors: "Sarah Doucette",
     lead: "City Planning — Community Planning, Etobicoke York District",
     support: "City Planning — Urban Design"
   },
 
   comp6: {
-    date: "August 24, 2021",
+    date: "Aug 2021",
     wards: "Ward 7 — Humber River-Black Creek",
     councillors: "Anthony Perruzza",
-    lead: "City Planning — Jane Finch Initiative",
-    support: "Jane Finch Community and Family Centre (CAC facilitation partner)"
+    lead: "Interdivisional team including Social Development, Economic Development, and City Planning",
+    support: "More than 4 divisions, including Employment and Transportation; Jane Finch Community and Family Centre (CAC facilitation partner)"
   },
 
   comp7: {
-    date: "May 2021 (TOR agreed at first meeting)",
+    date: "May 2021",
     wards: "Wards 8, 12 and 15",
-    councillors: "Mike Colle; Josh Matlow; Rachel Chernos Lin",
-    lead: "City Planning — Canada Square Special Study Area",
+    councillors: "Josh Matlow; Mike Colle; Rachel Chernos Lin",
+    lead: "Community Planning, Toronto and East York District - Midtown section",
     support: "Inter-divisional City team, including Parks, Forestry & Recreation; Children's Services; Economic Development & Culture; Transportation Services; CreateTO; TTC"
   },
 
   comp8: {
-    date: "August 2014",
-    wards: "Ward 14 — Toronto-Danforth",
-    councillors: "Sara Ehrhardt",
-    lead: "City Planning — Community Planning, Toronto & East York District",
-    support: "Not confirmed"
+    date: "Aug 2014",
+    wards: "Ward 29 – Toronto-Danforth (pre ward-mash)",
+    councillors: "Mary Fragedakis",
+    lead: "City Planning — Community Planning, Toronto & East York District - East Section",
+    support: "Urban Design and Transportation Planning"
   },
 
   comp9: {
-    date: "December 2021",
+    date: "Nov 2021",
     wards: "Wards 24 and 25",
     councillors: "Paul Ainslie; Neethan Shan",
-    lead: "City Planning — Community Planning, Scarborough District",
-    support: "City Planning — Urban Design, Scarborough District"
+    lead: "City Planning — Community Planning, Scarborough District - Southeast Section",
+    support: "City Planning — Urban Design"
   },
 
   comp10: {
-    date: "Not separately dated (TOR published in November 2015 report)",
+    date: "2015 or earlier",
     wards: "Citywide — all wards",
-    councillors: "All ward councillors",
-    lead: "Social Development, Finance & Administration — Seniors Strategy coordination",
-    support: "Multiple City divisions and agencies represented on the Accountability Table"
+    councillors: "Councillor Matlow is elected City rep",
+    lead: "Social Development, Finance & Administration - Social Policy Analysis and Research (SPAR)",
+    support: "Multiple City divisions and agencies"
   }
 };
 
@@ -252,7 +252,7 @@ function rowResult(cp) {
         <small>
           TOR date: ${esc(meta.date || 'Not confirmed')}
           · ${esc(meta.wards || 'Ward not confirmed')}
-          · Current councillor(s): ${esc(meta.councillors || 'Not confirmed')}
+          · Councillor(s): ${esc(meta.councillors || 'Not confirmed')}
         </small>
       </span>
 
