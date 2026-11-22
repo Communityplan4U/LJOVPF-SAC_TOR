@@ -97,11 +97,9 @@ async function saveResponse(){
  if((STATE.newsletterOptIn||STATE.planningOptIn)&&!STATE.email.trim()){
    STATE.saveError='Please enter your email address to receive updates, or uncheck the update choices.';render();return false;
  }
-const payload=snapshot();
-STATE.saving=true;STATE.saveError='';
- }
- STATE.saving=true;STATE.saveError='';
- inflight=(async()=>{
+  const payload=snapshot();
+  STATE.saving=true;STATE.saveError='';
+  inflight=(async()=>{
    try{
      const request={...payload};if(STATE.id){request.id=STATE.id;request.revision=STATE.revision;}
      const s=await fetchJSON(APP_BASE+'api/response',{method:'POST',headers:{'Content-Type':'application/json',...(STATE.token?{Authorization:'Bearer '+STATE.token}:{})},body:JSON.stringify(request)});
