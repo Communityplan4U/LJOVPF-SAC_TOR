@@ -167,10 +167,6 @@ function evidenceSection(){
     ).join('')}
   </ul>
 </div>
-<details>
-  <summary>View written TOR source references</summary>
-  <p class="help">${esc(e.source_section)}</p>
-</details>
 </article>`;
   }).join('')}</div></details>`).join('');
  return `<section class="subpanel" id="evidence"><h3>Read the comparative TOR assessments</h3><p class="help">Select an advisory body to review each of its twelve approved judgments, the two written-TOR provision summaries, the assessment rationale and page/section citations. These descriptions summarize the documents; they are not verbatim quotations. Only what the TORs say is assessed, not their implementation.</p>
