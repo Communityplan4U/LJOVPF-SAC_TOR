@@ -304,7 +304,7 @@ const meaning=v=>v===1?'LJOVPF TOR is weaker':v===-1?'LJOVPF TOR is stronger':v=
    if(!e||e.rating===null)return `<article class="detail-card"><strong>${esc(c.id)} — ${esc(c.name)}</strong><p class="help">Documentary assessment not available.</p></article>`;
    return `<article class="detail-card"><header><div><small>${esc(c.id)} · ${esc(a.name)}</small><h3>${esc(c.name)}</h3></div><span class="tag ${e.rating===1?'tag-w':e.rating===-1?'tag-s':'tag-c'}">
    ${meaning(e.rating)}
-   </span></header><div class="detail-grid"><div><h4>Little Jamaica SAC TOR</h4><p>${esc(e.ljovpf_excerpt)}</p></div><div><h4>${esc(cp.name)} TOR</h4><p>${esc(e.comparator_excerpt)}</p></div></div><div class="rationale"><strong>Assessment rationale</strong><p>${esc(e.rationale)}</p></div>
+   </span></header><div class="detail-grid"><div><h4>Little Jamaica SAC TOR</h4><p>${esc(e.ljovpf_excerpt)}</p></div><div><h4>${esc(cp.name)} TOR</h4><p>${esc(e.comparator_excerpt)}</p></div></div><div class="rationale"><strong>Assessment</strong><p>${esc(e.rationale)}</p></div>
 <div class="help">
   <strong>What this governance area assesses:</strong>
   <ul class="criteria-bullets">
@@ -317,7 +317,7 @@ const meaning=v=>v===1?'LJOVPF TOR is weaker':v===-1?'LJOVPF TOR is stronger':v=
 </div>
 </article>`;
   }).join('')}</div></details>`).join('');
- return `<section class="subpanel" id="evidence"><h3>Read the comparative TOR assessments</h3><p class="help">Select an advisory body to review each of its twelve approved judgments, the two written-TOR provision summaries, the assessment rationale and page/section citations. These descriptions summarize the documents; they are not verbatim quotations. Only what the TORs say is assessed, not their implementation.</p>
+ return `<section class="subpanel" id="evidence"><h3>Assessments Summary</h3><p class="help">Select an advisory body to review the LJOVPF SAC against its comparitors. These descriptions summarize the documents - they are not verbatim quotations. Only what the TORs say is assessed, not their implementation.</p>
  <div class="select-row"><label for="evidence-comparator">Advisory body to examine</label><select id="evidence-comparator">${DATA.comparators.filter(x=>x.id!=='ljovpf').map(x=>`<option value="${esc(x.id)}" ${cp.id===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
  <p class="help" style="margin-top:12px">${sourceLink(cp)} · Comparison uses the approved 12-criterion documentary assessment.</p>${groups}</section>`;
 }
