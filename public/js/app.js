@@ -250,7 +250,7 @@ function rowResult(cp) {
         ${titleLink}
 
         <small>
-          TOR date: ${esc(meta.date || 'Not confirmed')}
+          Published: ${esc(meta.date || 'Not confirmed')}
           · ${esc(meta.wards || 'Ward not confirmed')}
           · Councillor(s): ${esc(meta.councillors || 'Not confirmed')}
         </small>
