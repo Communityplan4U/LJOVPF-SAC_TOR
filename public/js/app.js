@@ -118,9 +118,6 @@ async function saveResponse(){
 }
 function scheduleSave(){if(!STATE.id)return;clearTimeout(saveTimer);saveTimer=setTimeout(async()=>{await saveResponse();const el=q('#save-state');if(el)el.textContent=saveLabel();},900);}
 
-function componentDetails(){
- return DATA.areas.map(a=>`<details class="area-accordion"><summary><span class="area-numeral">${START.indexOf(a.id)+1}</span><span class="acc-title">${esc(a.name)} <small>${members(a.id).length} components</small></span><span class="chev">⌄</span></summary><div class="acc-content"><ul class="criteria-bullets">${members(a.id).map(c=>`<li><strong>${esc(c.name)}:</strong> ${esc(CRITERIA_SUMMARIES[c.id]||c.description)}</li>`).join('')}</ul></div></details>`).join('');
-}
 function evidenceStatus(){return `<div class="safety-note" role="status"><strong>TOR comparison awaiting approval.</strong> The twelve assessment criteria and governance weights are established. Comparative findings will appear when their written-TOR judgments have been verified and approved. No example scores are shown.</div>`;}
 function scorebar(score){
  if(score==null)return '<div class="relative-track demo-track" aria-label="No score yet"></div>';
@@ -173,12 +170,11 @@ function evidenceSection(){
  <div class="select-row"><label for="evidence-comparator">Advisory body to examine</label><select id="evidence-comparator">${DATA.comparators.filter(x=>x.id!=='ljovpf').map(x=>`<option value="${esc(x.id)}" ${cp.id===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
  <p class="help" style="margin-top:12px">${sourceLink(cp)} · Comparison uses the approved 12-criterion documentary assessment.</p>${groups}</section>`;
 }
-function criteriaSection(){return `<div class="subpanel" id="criteria"><h3>Explore what the tool assesses</h3>${componentDetails()}</div>`;}
 function stepOne(){
  const results=ranked(START);
  return `${approved()?'':evidenceStatus()}<section class="subpanel"><div class="split-intro"><div><div class="eyebrow">WRITTEN TERMS OF REFERENCE</div><h3>Overall comparison</h3><p class="help">Compare the relative strength of written TOR provisions across all twelve criteria. The starting comparison uses the adopted 30–25–20–15–10 governance weights.</p></div></div>
   <div class="score-legend"><span><i class="legend-dot"></i> Higher scores favour the comparator’s TOR</span><span><i class="legend-dot legend-zero"></i> LJOVPF reference score: 0 (when rated)</span></div><div class="scores">${results.map(rowResult).join('')}</div><p class="help mini-gap">These comparisons assess commitments expressly written into each TOR, not how a committee operated. Weston in Gear is included using its supplied four-page LAC TOR. All ten comparators have approved documentary judgments.</p></section>
-  ${areaMatrix(START,false)}${evidenceSection()}${criteriaSection()}`;
+${areaMatrix(START,false)}${evidenceSection()}`;
 }
 function areaCard(area,i){return `<article class="rank-item area-rank-item" draggable="true" data-rank="${esc(area.id)}" aria-label="Rank ${i+1}: ${esc(area.name)}"><div class="drag-handle" aria-hidden="true">⠿</div><span class="rank-number">${i+1}</span><div class="rank-detail"><div class="rank-title"><strong>${esc(area.name)}</strong></div><p>${esc(AREA_INTRO[area.id])}</p></div><div class="rank-buttons"><button type="button" aria-label="Move ${esc(area.name)} up" data-up="${esc(area.id)}" ${i===0?'disabled':''}>↑</button><button type="button" aria-label="Move ${esc(area.name)} down" data-down="${esc(area.id)}" ${i===4?'disabled':''}>↓</button></div></article>`;}
 function connectionForm(){return `<section class="subpanel" id="participant-connection"><h3>How are you connected to Little Jamaica / Oakwood Vaughan?</h3><p>Optional. Select any that apply.</p>
@@ -198,7 +194,7 @@ function stepThree(){
   return `<div class="result-line ${cp.id==='ljovpf'?'reference-line':''}"><div class="res-main"><span class="res-rank">${cp.rank??'—'}</span><div class="res-title"><span class="result-body-name">${esc(cp.name)}</span><small>${esc(cp.body)}</small></div></div><span class="res-sum">${fmt(old.score)} <small>${old.rank===null?'Not rated':'rank '+old.rank}</small></span><span class="res-sum strong">${fmt(cp.score)} <small>${cp.rank===null?'Not rated':`rank ${cp.rank}${Math.abs(delta)<.005?' · same score':' · change '+fmt(delta)}`}</small></span></div>`;
  }).join('');
  return `${approved()?'':evidenceStatus()}<section class="subpanel"><div class="split-intro"><div><h3>Starting comparison and your comparison</h3><p class="help">Both columns use the same approved written-TOR judgments. Only the importance assigned to the five governance areas changes. Tied scores share a rank.</p></div></div><div class="results-table"><div class="results-heading"><span>Advisory body</span><span>Starting</span><span>With your priorities</span></div>${table}</div></section>
- ${areaMatrix(STATE.order,true)}${evidenceSection()}${criteriaSection()}${commentsForm()}`;
+${areaMatrix(STATE.order,true)}${evidenceSection()}${commentsForm()}`;
 }
 function stepFour(){
  const weights=currentWeights(),available=COMMUNITY.available===true,mean=COMMUNITY.averages||{};
