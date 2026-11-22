@@ -5,7 +5,7 @@
 import {AREA_IDS,POSITION_WEIGHTS,validOrder,weightsFor,completeComparator,areaResult,areaRank,comparison,validateAssessment} from './scoring.js';
 
 const STEPS=[
-  {title:'Compare the Terms of Reference',short:'Compare the TORs',desc:'  '},
+  {title:'Compare the opportunities for meaningful community influence',short:'Compare the opportunities for meaningful community influence',desc:'  '},
   {title:'Rank governance areas by impact',short:'Rank what matters',desc:'Put the five governance areas in the order you believe they affect community wellbeing. Every area remains part of the comparison.'},
   {title:'See your updated comparison',short:'Your updated comparison',desc:'Compare the starting results with those based on your priorities. Your ranking changes how much each governance area counts—not what the TORs say.'},
   {title:'Compare your priorities with others',short:'Community priorities',desc:'Compare the weight you assigned to each governance area with the average across completed responses to this SAC Terms of Reference assessment.'}
@@ -175,7 +175,7 @@ const meaning=v=>v===1?'LJOVPF TOR is weaker':v===-1?'LJOVPF TOR is stronger':v=
 }
 function stepOne(){
  const results=ranked(START);
- return `${approved()?'':evidenceStatus()}<section class="subpanel"><div class="split-intro"><div><div class="eyebrow">WRITTEN TERMS OF REFERENCE</div><h3>Overall comparison</h3><p class="help">Compare the relative strength of written TOR provisions across all twelve criteria. The weighting of governance criteria is based on community responses in our <a href="https://communityinpublic.ca/ljcdap#9f47bb79-1716-4a7c-a255-79033acc62b3" target="_blank" rel="noopener noreferrer">2026 Little Jamaica ACTIONS & PROGRESS INDICATORS survey findings report.</a></p></div></div>
+ return `${approved()?'':evidenceStatus()}<section class="subpanel"><div class="split-intro"><div><div class="eyebrow">WRITTEN TERMS OF REFERENCE</div><h3>Overall comparison</h3><p class="help">Compare the relative strength of written TOR provisions across all twelve criteria. The weighting of governance criteria is based on community responses in our <a href="https://communityinpublic.ca/ljcdap#9f47bb79-1716-4a7c-a255-79033acc62b3" target="_blank" rel="noopener noreferrer">2026 Little Jamaica ACTIONS & PROGRESS INDICATORS survey findings report. 9/10 studies are comparable planning studies; the seniors TOR is included as this an advisory commitee that Councillor Matlow explicitely identified is his benchmark and commitment for what he'd like to see the Little Jamaica advisory work like</a></p></div></div>
   <div class="score-legend"><span><i class="legend-dot"></i> Higher scores favour the comparator’s TOR</span><span><i class="legend-dot legend-zero"></i> LJOVPF reference score: 0 (when rated)</span></div><div class="scores">${results.map(rowResult).join('')}</div><p class="help mini-gap">These comparisons assess commitments expressly written into each TOR, not how a committee operated. Weston in Gear is included using its supplied four-page LAC TOR. All ten comparators have approved documentary judgments.</p></section>
 ${areaMatrix(START,false)}${evidenceSection()}`;
 }
