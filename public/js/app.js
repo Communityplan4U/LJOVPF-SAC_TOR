@@ -97,9 +97,8 @@ async function saveResponse(){
  if((STATE.newsletterOptIn||STATE.planningOptIn)&&!STATE.email.trim()){
    STATE.saveError='Please enter your email address to receive updates, or uncheck the update choices.';render();return false;
  }
- const payload=snapshot();
- if(payload.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)){
-   STATE.saveError='Please enter a valid email address.';render();return false;
+const payload=snapshot();
+STATE.saving=true;STATE.saveError='';
  }
  STATE.saving=true;STATE.saveError='';
  inflight=(async()=>{
@@ -176,10 +175,9 @@ function areaCard(area,i){return `<article class="rank-item area-rank-item" drag
 function connectionForm(){return `<section class="subpanel" id="participant-connection"><h3>How are you connected to Little Jamaica / Oakwood Vaughan?</h3><p>Optional. Select any that apply.</p>
   <div class="connections">${CONNECTION_CHOICES.map(([id,label])=>`<label><input type="checkbox" data-connection="${id}" ${STATE.connections.includes(id)?'checked':''}><span>${esc(label)}</span></label>`).join('')}</div>
   <label class="field-label" for="participant-email">Your email address (optional)</label>
-  <input id="participant-email" class="email-input" type="email" autocomplete="email" maxlength="254" value="${esc(STATE.email)}" placeholder="you@example.com">
-  <p class="help">Add your email if you would like Community in Public to contact you about your results or planning updates. Your address will not appear in public comparisons.</p>
+<input id="participant-email" class="email-input" type="text" inputmode="email" autocomplete="email" maxlength="254" value="${esc(STATE.email)}" placeholder="you@example.com">  <p class="help">Add your email if you would like Community in Public to contact you about your results or planning updates. Your address will not appear in public comparisons.</p>
   <fieldset class="consent"><legend>Would you like to stay involved? (Select all that apply)</legend><label><input id="newsletter" type="checkbox" ${STATE.newsletterOptIn?'checked':''}>Community in Public newsletter</label><label><input id="planning-updates" type="checkbox" ${STATE.planningOptIn?'checked':''}>Other updates about the Little Jamaica planning process</label></fieldset>
-  <p class="help" style="margin-top:18px">A valid email address is required only if you choose an email subscription. Your responses and comments are stored privately and reported publicly only in aggregate.</p></section>`;}
+  <p class="help" style="margin-top:18px">Email is optional. If you would like to receive updates, please provide an email address where we can reach you.</p></section>`;}
 function stepTwo(){return `<div class="selection-intro"><div class="eyebrow">YOUR PRIORITIES</div><h3>Which rules matter most for community wellbeing?</h3><p>Consider which areas would help residents shape planning decisions, prevent displacement and protect community spaces. Drag the areas into your preferred order, or use the arrows. <strong>First place counts for 30%; fifth counts for 10%.</strong> All five areas count.</p></div>
   <div class="subpanel"><div class="block-intro"><h3>Rank the five governance areas</h3><p class="help">The suggested starting order reflects themes in Little Jamaica community submissions—not a vote on these five areas. Change it to reflect your priorities.</p></div><div class="rank-items" id="area-rankings">${STATE.order.map((id,i)=>areaCard(DATA.areas.find(a=>a.id===id),i)).join('')}</div></div>${connectionForm()}`;}
 function commentsForm(){return `<section class="subpanel" id="tor-comments"><h3>Additional comments (optional)</h3><p>Do you have any suggestions, concerns or feedback about the <strong>Little Jamaica and Oakwood Vaughan Stakeholder Advisory Committee’s Terms of Reference</strong>, including how they support community decision-making, democratic rights and accountability?</p>
