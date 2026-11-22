@@ -84,7 +84,7 @@ async function restoreFromLink(){
    STATE.order=[...s.ranking];STATE.connections=[...s.connections||[]];STATE.email=s.email||'';
    STATE.newsletterOptIn=!!s.newsletterOptIn;STATE.planningOptIn=!!s.planningOptIn;STATE.feedback=s.feedback||'';
    STATE.id=s.id;STATE.token=token;STATE.revision=s.revision;STATE.savedSignature=signature();STATE.unlocked=3;
-   STATE.notice='Welcome back. Your saved response has been restored and can be revised.';
+STATE.notice='';
  } catch(e){STATE.saveError='Could not restore your private response. The link may be invalid or the response unavailable.';}
 }
 let inflight=null,saveTimer=null;
