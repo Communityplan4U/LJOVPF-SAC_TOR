@@ -154,3 +154,12 @@ button.secondary,.rank-buttons button,.scope button{background:#fff;color:#4e305
 .comparison-help{font-size:.84rem;color:#6b6172;margin:8px 0 10px}
 @media(max-width:530px){.connections{grid-template-columns:1fr}.compare-bars{grid-template-columns:1fr}}
 
+/* Governance area assessment title and bullet list */
+.detail-card > div.help {
+  font-size: 0.79rem;
+}
+
+.detail-card > div.help .criteria-bullets li {
+  font-size: 0.79rem;
+}
+
