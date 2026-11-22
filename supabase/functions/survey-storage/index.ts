@@ -3,7 +3,7 @@
 // The Vercel gateway token is sensitive; only its SHA-256 fingerprint is
 // checked into source, exactly as in the Framework Assessment gateway.
 // The Supabase service-role key stays inside Supabase.
-const PUBLIC_DIGEST='ff849cb67c5667a3cd5eb43d5b2957a4fb0531a2468371b67aafc304ab77962d';
+const PUBLIC_DIGEST='6539bb46192787561b3dc09ff3a3e95578439731e07e6748e0930bb8989420eb';
 const OPS = new Set(['insert_response','get_response','update_response','delete_response','community_average']);
 const encoder = new TextEncoder();
 const IDS = new Set(['G1','G2','G3','G5','G4']);
