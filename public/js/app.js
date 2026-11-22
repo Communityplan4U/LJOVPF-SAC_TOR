@@ -4,8 +4,8 @@ import {AREA_IDS,POSITION_WEIGHTS,validOrder,weightsFor,completeComparator,areaR
 const STEPS=[
   {title:'Compare the opportunities for meaningful community influence',short:'Compare the opportunities for meaningful community influence',desc:'  '},
   {title:'(Optional) Adjust ranking of governance areas by impact',short:'(Optional) Adjust ranking of governance areas by impact',desc:'Put the five governance areas in the order, from having the most to least impact on community having meaningful influence to ensure solutions to displacement and for community wellbeing are prioritized and advanced.'},
-  {title:'See the updated comparison',short:'Your the updated comparison',desc:'Compare the default results with those based on your priorities. Your ranking changes how much each governance area counts — not the assessment per criteria.'},
-  {title:'See how other prioritized committee governance',short:'See how other prioritized committee governance',desc:'Compare the weight you assigned to each governance area with the average across completed responses to this SAC Terms of Reference assessment.'}
+  {title:'(Optional) See the updated comparison',short:'(Optional) Your the updated comparison',desc:'Compare the default results with those based on your priorities. Your ranking changes how much each governance area counts — not the assessment per criteria.'},
+  {title:'(Optional) See how other prioritized committee governance',short:'(Optional) See how other prioritized committee governance',desc:'Compare the weight you assigned to each governance area with the average across completed responses to this SAC Terms of Reference assessment.'}
 ];
 const AREA_INTRO={
  G1:'The ability to shape priorities, make recommendations and influence how advice is used.',
