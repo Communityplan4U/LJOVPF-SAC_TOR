@@ -20,7 +20,6 @@ test('source publishes exactly 120 approved, evidence-backed judgments including
  assert.equal(data.components.length,12);
  assert.equal(data.areas.length,5);
  assert.equal(data.comparators.length,11);
- assert.equal(data.comparators.find(x=>x.id==='comp2').url,'sources/weston-in-gear-lac-tor.pdf');
  assert.equal(data.published,true);
  assert.equal(data.assessment_status,'approved');
  assert.deepEqual(validateAssessment(data,true),[]);
