@@ -2,10 +2,10 @@
 import {AREA_IDS,POSITION_WEIGHTS,validOrder,weightsFor,completeComparator,areaResult,areaRank,comparison,validateAssessment} from './scoring.js';
 
 const STEPS=[
-  {title:'Compare the opportunities for meaningful community influence',short:'Compare the opportunities for meaningful community influence',desc:'  '},
-  {title:'(Optional) Adjust ranking of governance areas by impact',short:'(Optional) Adjust ranking of governance areas by impact',desc:'Put the five governance areas in the order, from having the most to least impact on community having meaningful influence to ensure solutions to displacement and for community wellbeing are prioritized and advanced.'},
-  {title:'(Optional) See the updated comparison',short:'(Optional) Your the updated comparison',desc:'Compare the default results with those based on your priorities. Your ranking changes how much each governance area counts — not the assessment per criteria.'},
-  {title:'(Optional) See how other prioritized committee governance',short:'(Optional) See how other prioritized committee governance',desc:'Compare the weight you assigned to each governance area with the average across completed responses to this SAC Terms of Reference assessment.'}
+  {title:'Explore how Toronto advisory committees compare',short:'Explore how Toronto advisory committees compare',desc:'  '},
+  {title:'(Optional) Which governance areas matter most to you?',short:'(Optional) Which governance areas matter most to you?',desc:'Rank the five areas according to their importance for meaningful community participation and wellbeing. Your ranking changes their relative weights, not the underlying assessment.'},
+  {title:'(Optional) Explore the comparison based on your priorities',short:'(Optional) Explore the comparison based on your priorities',desc:'See how your ranking changes the overall results. All comparisons continue to use the same documented criteria and evidence.'},
+  {title:'(Optional) How do your priorities compare with other participants?',short:'(Optional) How do your priorities compare with other participants?',desc:'Explore how other respondents have ranked the five governance areas. These results reflect survey participants and are not a representative neighbourhood poll.'}
 ];
 const AREA_INTRO={
  G1:'The ability to shape priorities, make recommendations and influence how advice is used.',
@@ -297,7 +297,7 @@ function evidenceSection(){
   
 const ljov = DATA.comparators.find(x => x.id === 'ljovpf');
 
-const meaning=v=>v===1?'LJOVPF TOR is weaker':v===-1?'LJOVPF TOR is stronger':v===0?'Comparable written provisions':'Not rated'; const groups=DATA.areas.map((a,i)=>`<details class="area-accordion" ${i===0?'open':''}><summary><span class="area-numeral">${i+1}</span><span class="acc-title">${esc(a.name)}<small>${members(a.id).length} assessment criteria</small></span><span class="chev">⌄</span></summary><div class="acc-content">${members(a.id).map(c=>{
+const meaning=v=>v===1?'Comparator TOR provides stronger written commitments':v===-1?'LJOVPF TOR provides stronger written commitments':v===0?'Comparable written provisions':'Not rated'; const groups=DATA.areas.map((a,i)=>`<details class="area-accordion" ${i===0?'open':''}><summary><span class="area-numeral">${i+1}</span><span class="acc-title">${esc(a.name)}<small>${members(a.id).length} assessment criteria</small></span><span class="chev">⌄</span></summary><div class="acc-content">${members(a.id).map(c=>{
    const e=DATA.judgments?.[cp.id]?.[c.id];
    if(!e||e.rating===null)return `<article class="detail-card"><strong>${esc(c.id)} — ${esc(c.name)}</strong><p class="help">Documentary assessment not available.</p></article>`;
    return `<article class="detail-card"><header><div><small>${esc(c.id)} · ${esc(a.name)}</small><h3>${esc(c.name)}</h3></div><span class="tag ${e.rating===1?'tag-w':e.rating===-1?'tag-s':'tag-c'}">
@@ -315,13 +315,14 @@ const meaning=v=>v===1?'LJOVPF TOR is weaker':v===-1?'LJOVPF TOR is stronger':v=
 </div>
 </article>`;
   }).join('')}</div></details>`).join('');
- return `<section class="subpanel" id="evidence"><h3>Assessments Summary</h3><p class="help">Select an advisory body to review the LJOVPF SAC against its comparitors. These descriptions summarize the documents - they are not verbatim quotations. Only what the TORs say is assessed, not their implementation.</p>
+ return `<section class="subpanel" id="evidence"><h3>Assessments Summary</h3><p class="help">Select an advisory body to review the LJOVPF SAC against its comparators. These descriptions summarize the documents - they are not verbatim quotations. Only what the TORs say is assessed, not their implementation.</p>
  <div class="select-row"><label for="evidence-comparator">Advisory body to examine</label><select id="evidence-comparator">${DATA.comparators.filter(x=>x.id!=='ljovpf').map(x=>`<option value="${esc(x.id)}" ${cp.id===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div>
 ${groups}</section>`;
 }
 function stepOne(){
  const results=ranked(START);
- return `${approved()?'':evidenceStatus()}<section class="subpanel"><div class="split-intro"><div><h3>Overall comparison</h3><p class="help">Compare the relative strength of written TOR provisions across all twelve criteria. The weighting of governance criteria is based on community responses in our <a href="https://communityinpublic.ca/ljcdap#9f47bb79-1716-4a7c-a255-79033acc62b3" target="_blank" rel="noopener noreferrer">2026 Little Jamaica ACTIONS & PROGRESS INDICATORS survey findings report</a>. 9/10 studies are comparable planning studies; the seniors TOR is included because Councillor Matlow explicitely identified it is his benchmark and commitment for what he'd like to see the Little Jamaica advisory work like.</p></div></div>
+ return `${approved()?'':evidenceStatus()}<section class="subpanel"><div class="split-intro"><div><h3>Overall comparison</h3><p class="help">The weighting of governance criteria is based on community responses in our <a href="https://communityinpublic.ca/ljcdap#9f47bb79-1716-4a7c-a255-79033acc62b3" target="_blank" rel="noopener noreferrer">2026 Little Jamaica ACTIONS & PROGRESS INDICATORS survey findings report</a>. The seniors TOR is included because Councillor Matlow identified it is his benchmark and commitment for what he'd like to see the Little Jamaica advisory work like.</p>
+ <p>The comparison identifies where other Terms of Reference provide stronger commitments, where provisions are comparable, and where Little Jamaica's Terms of Reference provide stronger commitments. The results offer an opportunity to identify practices that could strengthen the Little Jamaica and Oakwood Vaughan planning process. They assess the written committee rules, notcommittees have operated in practice or the quality of their planning recommendations.</p></div></div>
   <div class="score-legend"><span><i class="legend-dot"></i> Score is higher than LJOVPF's. None score lower.</span><span><i class="legend-dot legend-zero"></i> LJOVPF reference score: 0.</span></div><div class="scores">${results.map(rowResult).join('')}</div><p class="help mini-gap">These comparisons assess commitments expressly written into each TOR, not how a committee operated.</p></section>
 ${areaMatrix(START,false)}${evidenceSection()}`;
 }
@@ -334,7 +335,9 @@ function connectionForm(){return `<section class="subpanel" id="participant-conn
   <p class="help" style="margin-top:18px">Email is optional. If you would like to receive updates, please provide an email address where we can reach you.</p></section>`;}
 function stepTwo(){return `<div class="selection-intro"><h3>Which rules matter most for community wellbeing?</h3><p>Drag the areas into your preferred order, or use the arrows. Weighting is based on placement. <strong>First place counts for 30%; fifth counts for 10%.</strong></p></div>
   <div class="subpanel"><div class="block-intro"><h3>Rank the five governance areas</h3><p class="help">The default order below is based on community responses in our <a href="https://communityinpublic.ca/ljcdap#9f47bb79-1716-4a7c-a255-79033acc62b3" target="_blank" rel="noopener noreferrer">2026 Little Jamaica ACTIONS & PROGRESS INDICATORS survey findings report</a>. Change the order to reflect your priorities.</p></div><div class="rank-items" id="area-rankings">${STATE.order.map((id,i)=>areaCard(DATA.areas.find(a=>a.id===id),i)).join('')}</div></div>${connectionForm()}`;}
-function commentsForm(){return `<section class="subpanel" id="tor-comments"><h3>Additional comments (optional)</h3><p>Do you have any suggestions, concerns or feedback about the <strong>Little Jamaica and Oakwood Vaughan Stakeholder Advisory Committee’s Terms of Reference</strong>, or this survey - including how either can support community decision-making, democratic rights, and accountable government services?</p>
+function commentsForm(){return `<section class="subpanel" id="tor-comments"><h3>Additional comments (optional)</h3><p>What additional commitments, clarifications or practices would help the Little Jamaica and Oakwood Vaughan SAC support meaningful community participation?
+
+We welcome perspectives from residents, businesses, community organizations, SAC members and City staff. You can also share suggestions about this comparison, including any relevant written provisions or source information we may have overlooked.</p>
  <label class="sr-only" for="comment">Additional comments about the SAC Terms of Reference</label><textarea id="comment" class="tor-comment-input" maxlength="1500" rows="5" placeholder="Share your comments about the SAC Terms of Reference…">${esc(STATE.feedback)}</textarea>
  <button type="button" class="secondary" id="save-comment">Submit my comments</button><p class="help" id="comment-status" role="status">Comments are optional.</p></section>`;}
 function stepThree(){
