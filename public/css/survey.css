@@ -309,3 +309,635 @@ font-size: 0.72rem;
 }
 }
 
+
+/* ==================================================
+   COMMUNITY IN PUBLIC — DIGITAL DESIGN SYSTEM
+   ================================================== */
+
+/* Brand colours and shared design tokens */
+
+:root {
+  --cip-orange: #F37721;
+  --cip-action: #A64B12;
+  --cip-action-hover: #843B0E;
+  --cip-ink: #232234;
+  --cip-muted: #5F5C65;
+  --cip-tint: #FFF2E8;
+  --cip-grey: #F7F7F7;
+  --cip-border: #E3E0DC;
+  --cip-control-border: #93877F;
+  --cip-white: #FFFFFF;
+  --cip-positive: #376E57;
+  --cip-negative: #973951;
+  --cip-radius: 8px;
+
+  /* Compatibility with existing variables */
+  --ink: var(--cip-ink);
+  --purple: var(--cip-action);
+  --light: var(--cip-tint);
+  --line: var(--cip-border);
+
+  background: var(--cip-white);
+  color: var(--cip-ink);
+  font-family: Inter, system-ui, -apple-system,
+    "Segoe UI", Arial, sans-serif;
+}
+
+
+/* TYPOGRAPHY */
+
+h1, h2, h3, h4 {
+  color: var(--cip-ink);
+  letter-spacing: -0.015em;
+}
+
+.lead h1 {
+  color: var(--cip-action);
+  font-weight: 750;
+}
+
+.eyebrow,
+.kicker,
+.sidebar h3 {
+  color: var(--cip-action);
+  font-weight: 750;
+  letter-spacing: 0.10em;
+}
+
+.lead p,
+.panel-head p,
+.subpanel > p,
+.help,
+.save-state,
+.comparison-help,
+.rank-item p,
+.rank-item .rank-detail p,
+.criteria-bullets li,
+.assess-item p,
+.detail-grid p,
+.finding p {
+  color: var(--cip-muted);
+}
+
+.criteria-bullets li strong {
+  color: var(--cip-ink);
+}
+
+.criteria-bullets li::marker {
+  color: var(--cip-action);
+}
+
+
+/* LINKS */
+
+a,
+.text-btn,
+.link-like,
+.framework-link,
+.source-link,
+.topic-tile details summary,
+.score-row.tor-score-row .framework-link {
+  color: var(--cip-action);
+  text-underline-offset: 3px;
+}
+
+a:hover,
+.text-btn:hover,
+.link-like:hover,
+.score-row.tor-score-row .framework-link:hover {
+  color: var(--cip-action-hover);
+}
+
+
+/* COMMUNITY IN PUBLIC HEADER */
+
+.sitehead {
+  background: var(--cip-white);
+  color: var(--cip-ink);
+  border-bottom: 1px solid var(--cip-border);
+}
+
+.brand,
+.mark {
+  color: var(--cip-orange);
+}
+
+.tagline {
+  color: var(--cip-muted);
+}
+
+.cip-brand {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: var(--cip-action);
+  font-size: 0.85rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+
+/* SURVEY STATUS AND PROGRESS */
+
+.statusbar {
+  background: var(--cip-tint);
+  color: var(--cip-action-hover);
+  border-bottom: 1px solid var(--cip-border);
+}
+
+#progress {
+  background: var(--cip-border);
+}
+
+#progressbar {
+  background: var(--cip-orange);
+}
+
+
+/* PRIMARY BUTTONS */
+
+button.primary {
+  background: var(--cip-action);
+  border: 2px solid var(--cip-action);
+  color: white;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+button.primary:hover:not(:disabled) {
+  background: var(--cip-action-hover);
+  border-color: var(--cip-action-hover);
+}
+
+
+/* SECONDARY BUTTONS */
+
+button.secondary,
+.scope button {
+  background: white;
+  color: var(--cip-action);
+  border: 1px solid var(--cip-action);
+  border-radius: 999px;
+  font-weight: 650;
+}
+
+.rank-buttons button {
+  background: white;
+  color: var(--cip-action);
+  border: 1px solid var(--cip-control-border);
+  border-radius: 6px;
+}
+
+button.secondary:hover:not(:disabled),
+.scope button:hover:not(:disabled),
+.rank-buttons button:hover:not(:disabled) {
+  background: var(--cip-tint);
+}
+
+.scope button[aria-pressed=true] {
+  background: var(--cip-action);
+  border-color: var(--cip-action);
+  color: white;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+.ga-table-shell:focus-visible {
+  outline: 3px solid var(--cip-action);
+  outline-offset: 3px;
+}
+
+
+/* MAIN PANELS AND CARDS */
+
+.sidebar,
+.mainpanel,
+.subpanel,
+.kpi,
+.topic-tile,
+.component-card,
+.rank-item,
+.detail-card,
+.finding,
+.comparison-item,
+.compare-item,
+.context-detail > div,
+.final-ranks > div,
+.inline-comparison .metric,
+.area-accordion,
+.ga-table-shell {
+  background: white;
+  border-color: var(--cip-border);
+  border-radius: var(--cip-radius);
+  box-shadow: none;
+}
+
+.panel-head,
+.panel-actions {
+  border-color: var(--cip-border);
+}
+
+
+/* FOUR-STEP NAVIGATION */
+
+#steps button {
+  color: var(--cip-ink);
+  border-radius: 6px;
+}
+
+#steps button span {
+  color: var(--cip-muted);
+}
+
+#steps button.current {
+  background: var(--cip-tint);
+  color: var(--cip-action-hover);
+  border-left: 4px solid var(--cip-orange);
+}
+
+#steps button.current span {
+  color: var(--cip-action-hover);
+}
+
+#steps button:hover:not(:disabled):not(.current) {
+  background: var(--cip-grey);
+}
+
+.sidebar .small-card {
+  background: var(--cip-grey);
+  border-color: var(--cip-border);
+  color: var(--cip-muted);
+}
+
+
+/* RANKING AND DRAG-AND-DROP */
+
+.rank-number,
+.area-numeral,
+.res-rank,
+.topic-id,
+.weight-pill {
+  background: var(--cip-tint);
+  color: var(--cip-action-hover);
+  border-radius: 6px;
+}
+
+.weight-pill {
+  border-radius: 999px;
+}
+
+.drag-handle,
+.chev {
+  color: var(--cip-action);
+}
+
+.rank-item.drag-over {
+  border-color: var(--cip-action);
+  background: var(--cip-tint);
+  box-shadow: 0 0 0 2px var(--cip-orange);
+}
+
+.priority-drop-zone {
+  background: var(--cip-grey);
+  border-color: var(--cip-border);
+}
+
+.priority-drop-zone h4 {
+  color: var(--cip-ink);
+}
+
+.priority-drop-zone.is-drop-target {
+  background: var(--cip-tint);
+  border-color: var(--cip-action);
+}
+
+.empty-zone {
+  border-color: var(--cip-control-border);
+  color: var(--cip-muted);
+}
+
+
+/* SCORE AND SUMMARY FEATURES */
+
+.score-feature,
+.selection-intro,
+.preview-note,
+.inset,
+.source-caption {
+  background: var(--cip-tint);
+  border-color: var(--cip-border);
+  border-radius: var(--cip-radius);
+  color: var(--cip-ink);
+}
+
+.selection-intro p {
+  color: var(--cip-muted);
+}
+
+.score-feature strong,
+.selection-counter,
+.kpi .kpi-value,
+.stat-num,
+.method-formula,
+.metric strong,
+.sidebar .small-card .flow-num {
+  color: var(--cip-action);
+}
+
+.score-row,
+.score-row.tor-score-row {
+  background: white;
+  border-color: var(--cip-border);
+  border-radius: var(--cip-radius);
+}
+
+.score-row.home-score,
+.score-row.tor-score-row.home-score,
+.result-line.reference-line {
+  background: var(--cip-tint);
+  border-color: #E5B897;
+}
+
+.score-row strong,
+.score-row .big-score,
+.score-row.tor-score-row .score-rank,
+.result-body-name,
+.res-sum,
+.res-sum.strong {
+  color: var(--cip-ink);
+}
+
+.score-name small,
+.score-row.tor-score-row .score-name small,
+.score-row.tor-score-row .score-lead,
+.score-row.tor-score-row .score-support,
+.res-title small,
+.res-sum small,
+.score-value-pair small,
+.kpi .kpi-label {
+  color: var(--cip-muted);
+}
+
+
+/* SCORE BARS — KEEP ANALYTICAL COLOURS */
+
+.relative-track,
+.score-row.tor-score-row .relative-track,
+.progress-meter,
+.bar-track {
+  background: #EEECE9;
+}
+
+.relative-track .zero-axis {
+  background: var(--cip-muted);
+}
+
+.relative-track .positive-bar,
+.score-row.tor-score-row .relative-track .positive-bar,
+.legend-dot {
+  background: var(--cip-positive);
+}
+
+.relative-track .negative-bar,
+.score-row.tor-score-row .relative-track .negative-bar {
+  background: var(--cip-negative);
+}
+
+.legend-zero {
+  background: #938C86;
+}
+
+.delta-positive {
+  color: var(--cip-positive) !important;
+}
+
+.delta-negative {
+  color: var(--cip-negative) !important;
+}
+
+
+/* GOVERNANCE AREA COMPARISON MATRIX */
+
+.ga-table th,
+.ga-table td,
+th,
+td {
+  border-bottom-color: var(--cip-border);
+}
+
+th,
+.ga-table thead th,
+.ga-table thead th:first-child,
+.matrix thead th {
+  background: var(--cip-grey);
+  color: var(--cip-ink);
+  border-color: var(--cip-border);
+}
+
+.ga-table tbody tr:nth-child(even) td,
+.ga-table tbody tr:nth-child(even) th {
+  background: #FAFAFA;
+}
+
+.ga-table tbody tr.ga-reference th {
+  background: var(--cip-tint);
+}
+
+.ga-table tbody tr.ga-reference td {
+  box-shadow: inset 0 0 0 999px
+    rgba(243, 119, 33, 0.06);
+}
+
+.ga-body-name {
+  color: var(--cip-ink);
+}
+
+.ga-body-kind,
+.ga-table thead th small,
+.ga-bottomnote,
+.ga-legend,
+.matrix-note {
+  color: var(--cip-muted);
+}
+
+/* Positive, zero and negative remain distinct */
+
+.ga-cell.pos {
+  background: #E6F1EB;
+  color: #28543F;
+}
+
+.ga-cell.zero {
+  background: #F0EFED;
+  color: #5F5C65;
+}
+
+.ga-cell.neg {
+  background: #F6E7EC;
+  color: #87374B;
+}
+
+.ga-legend-swatch {
+  background: #E6F1EB;
+  border-color: #91B6A3;
+}
+
+.ga-legend-swatch.neutral {
+  background: #F0EFED;
+  border-color: #C5C0BA;
+}
+
+.ga-legend-swatch.negative {
+  background: #F6E7EC;
+  border-color: #D5A4B3;
+}
+
+.matrix td.neutral button {
+  background: #F0EFED;
+  color: var(--cip-muted);
+}
+
+
+/* EXPANDABLE GOVERNANCE ASSESSMENTS */
+
+.area-accordion summary:hover {
+  background: var(--cip-grey);
+}
+
+.area-accordion[open] summary {
+  background: var(--cip-tint);
+  border-bottom-color: var(--cip-border);
+}
+
+.acc-title,
+.finding h4,
+.select-row label {
+  color: var(--cip-ink);
+}
+
+.acc-title small,
+.detail-card header small,
+.detail-grid h4,
+.context-detail dt,
+.source-table small,
+.assess-list .detail-card header small {
+  color: var(--cip-muted);
+}
+
+.rationale {
+  background: var(--cip-grey);
+  border-left: 3px solid var(--cip-orange);
+  color: var(--cip-ink);
+  border-radius: 6px;
+}
+
+
+/* FORMS AND PARTICIPATION QUESTIONS */
+
+.select-row select,
+.component-controls select,
+.component-controls input,
+.toolbar select,
+.toolbar input,
+.email-input,
+.tor-comment-input {
+  background: white;
+  color: var(--cip-ink);
+  border-color: var(--cip-control-border);
+  border-radius: 6px;
+}
+
+.connections input,
+.consent input {
+  accent-color: var(--cip-action);
+}
+
+
+/* COMMUNITY PRIORITY COMPARISONS */
+
+.compare-bars i,
+.swatch.you,
+.bar-you,
+.progress-meter i {
+  background: var(--cip-action);
+}
+
+.compare-bars i.average,
+.swatch.community,
+.bar-community {
+  background: #777682;
+}
+
+.compare-bars > div,
+.compare-bars .bar-head span,
+.comparison-label span,
+.bar-label small,
+.compare-legend,
+.score-legend {
+  color: var(--cip-muted);
+}
+
+.compare-item > strong {
+  color: var(--cip-ink);
+}
+
+.empty-community {
+  background: var(--cip-grey);
+}
+
+.empty-community .empty-symbol {
+  color: var(--cip-action);
+}
+
+.empty-community p {
+  color: var(--cip-muted);
+}
+
+
+/* ADDITIONAL BRAND ALIGNMENT */
+
+.tag:not(.tag-w):not(.tag-c):not(.tag-s) {
+  background: var(--cip-tint);
+  color: var(--cip-action-hover);
+}
+
+.tag-c {
+  background: #F0EFED;
+  color: var(--cip-muted);
+}
+
+.results-heading,
+.result-line {
+  border-bottom-color: var(--cip-border);
+}
+
+.results-heading {
+  color: var(--cip-muted);
+}
+
+.result-line:hover,
+.result-item:hover {
+  background: var(--cip-grey);
+}
+
+.order-chips .tag {
+  background: var(--cip-grey);
+}
+
+.source-table td {
+  border-color: var(--cip-border);
+}
+
+.component-mini,
+.topic-subject,
+.zone-descr,
+.small-score,
+.metric span {
+  color: var(--cip-muted);
+}
+
+/* END — COMMUNITY IN PUBLIC DESIGN SYSTEM */
